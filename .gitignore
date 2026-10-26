@@ -1,0 +1,11 @@
+.gradle/
+.gradle-user-home/
+.kotlin/
+**/build/
+local.properties
+.idea/
+*.iml
+captures/
+tmp/
+*.onnx
+*.ort
