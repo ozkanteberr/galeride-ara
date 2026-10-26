@@ -53,6 +53,17 @@ flowchart TD
 
 `SearchPhotos` görsel encoder'a veya MediaStore'a bağımlı değildir. Böylece sorgu sırasında fotoğraf inference'ı çağırma yolu bulunmaz. Sadece metin kodlama ve saklanmış vektörler kullanılır.
 
+## Galeri arayüzünün dosya sınırları
+
+- `MainActivity`: edge-to-edge pencereyi ve Compose içeriğini başlatır.
+- `GaleriAraTheme`: mevcut Material temasını ve renk şemasını tanımlar.
+- `GalleryRoute`: ViewModel bağlantısı, izin isteği, uygulama ayarlarına yönlendirme ve ON_RESUME yenilemesini yönetir.
+- `GalleryScreen`: aldığı ekran durumu ve olay callback'leriyle sayfayı çizer; seçili fotoğrafın geçici önizleme durumunu tutar.
+- `GalleryUiState`: ekran durumunu tanımlar; `GalleryViewModel`: mevcut yükleme ve iptal akışını yönetir.
+- `GalleryAccessCard`, `PhotoGrid`, `PhotoPreviewDialog`: erişim kartı, küçük görsel listesi ve önizleme penceresini ayrı ayrı çizer.
+
+Bu ayrım yeni bir mimari yaklaşım eklemez; mevcut davranışı onaylanan dosya sınırlarına taşır. Veri katmanı ve arama çekirdeği bu düzenlemenin kapsamı dışındadır.
+
 ## Veri ve geçerlilik
 
 - `photos`: URI birincil anahtar; görünen ad, değişiklik zamanı ve boyut.

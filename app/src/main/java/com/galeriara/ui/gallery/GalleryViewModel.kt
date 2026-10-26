@@ -1,21 +1,15 @@
-package com.galeriara.ui
+package com.galeriara.ui.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.galeriara.data.*
+import com.galeriara.data.GalleryAccess
+import com.galeriara.data.GalleryRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class GalleryUiState(
-    val access: GalleryAccess = GalleryAccess.DENIED,
-    val photos: List<PhotoEntity> = emptyList(),
-    val loading: Boolean = false,
-    val error: String? = null,
-)
 
 class GalleryViewModel(private val gallery: GalleryRepository) : ViewModel() {
     private val mutableState = MutableStateFlow(GalleryUiState())

@@ -1,6 +1,6 @@
 # Atomik çalışma listesi
 
-Her görev tek amaç taşır. Başlamadan önce kapsam ve kabul ölçütü belirtilir; görev doğrulanıp sonuç bildirildikten sonra sıradakine geçilir. Alt görevler toplu bir özellik değişikliğine dönüştürülmez. Bu liste bütün maddelerin aynı oturumda uygulanması için talimat değildir.
+Her görev tek amaç taşır. Görevden önce önceki adımın sonucu ve sıradaki kapsam kullanıcıya anlatılır; kullanıcı onayından sonra başlanır. Mimari kararlar alternatifleriyle sunulur ve karar verilmeden uygulanmaz. Görev sonunda tek cümlelik İngilizce commit mesajı önerilir; commit işlemini kullanıcı yapar. Başlamadan önce kapsam ve kabul ölçütü belirtilir; görev doğrulanıp sonuç bildirildikten sonra sıradakine geçilir. Alt görevler toplu bir özellik değişikliğine dönüştürülmez. Bu liste bütün maddelerin aynı oturumda uygulanması için talimat değildir.
 
 ## İlk başlangıç paketinin durumu
 
@@ -11,6 +11,7 @@ Her görev tek amaç taşır. Başlamadan önce kapsam ve kabul ölçütü belir
 | ID | Tek amaç | Tamamlanma ölçütü |
 |---|---|---|
 | A01 (tamamlandı) | Başlangıç iskeletini doğrula | 5 çekirdek testi geçti; debug APK üretildi; lint: 0 hata, 9 uyarı |
+| A01.1 (tamamlandı) | Galeri arayüzünü sorumluluklarına göre dosyalara ayır | Debug APK ve 5 test başarılı; lint 0 hata, 9 uyarı; emülatörde açılış, izin düğmesi, liste, önizleme ve kapatma doğrulandı |
 | A02 | Galeri izin akışını cihazda doğrula | Ret/tam/sınırlı izin ve ayarlardan dönüş senaryoları kayıtlı |
 | A03 | PicQuery model sözleşmesini sabitle | Referans commit, model/tokenizer/ön işleme girdileri belgeli |
 | A04 | Türkçe çeviri adayını seç | Kaynak, lisans, boyut ve Android uygulanabilirliği doğrulanmış |
