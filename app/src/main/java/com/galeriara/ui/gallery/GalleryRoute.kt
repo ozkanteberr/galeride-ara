@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.galeriara.GalleryApplication
+import com.galeriara.data.GalleryAccess
 import com.galeriara.data.galleryAccess
 import com.galeriara.data.galleryPermissions
 
@@ -30,19 +31,27 @@ fun GalleryRoute() {
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { viewModel.refresh(context.galleryAccess()) }
 
+    val openSettings: () -> Unit = {
+        context.startActivity(Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.parse("package:${context.packageName}"),
+        ))
+    }
+
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.refresh(context.galleryAccess())
     }
 
     GalleryScreen(
         state = state,
-        onRequestAccess = { permissions.launch(galleryPermissions()) },
-        onOpenSettings = {
-            context.startActivity(Intent(
-                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:${context.packageName}"),
-            ))
+        onRequestAccess = {
+            if (context.galleryAccess() == GalleryAccess.FULL) {
+                openSettings()
+            } else {
+                permissions.launch(galleryPermissions())
+            }
         },
+        onOpenSettings = openSettings,
         onRefresh = { viewModel.refresh(context.galleryAccess()) },
     )
 }

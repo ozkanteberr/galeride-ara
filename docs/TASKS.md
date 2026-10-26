@@ -12,7 +12,7 @@ Her görev tek amaç taşır. Görevden önce önceki adımın sonucu ve sırada
 |---|---|---|
 | A01 (tamamlandı) | Başlangıç iskeletini doğrula | 5 çekirdek testi geçti; debug APK üretildi; lint: 0 hata, 9 uyarı |
 | A01.1 (tamamlandı) | Galeri arayüzünü sorumluluklarına göre dosyalara ayır | Debug APK ve 5 test başarılı; lint 0 hata, 9 uyarı; emülatörde açılış, izin düğmesi, liste, önizleme ve kapatma doğrulandı |
-| A02 | Galeri izin akışını cihazda doğrula | Ret/tam/sınırlı izin ve ayarlardan dönüş senaryoları kayıtlı |
+| A02 (tamamlandı) | Galeri izin akışını cihazda doğrula | API 35 üzerinde ret/tam/sınırlı erişim, seçim değişikliği ve ayarlardan dönüş doğrulandı; tam erişimde ayarlara yönlendirme düzeltildi; [kontrol kaydı](validation/A02_GALLERY_PERMISSIONS.md) |
 | A03 | PicQuery model sözleşmesini sabitle | Referans commit, model/tokenizer/ön işleme girdileri belgeli |
 | A04 | Türkçe çeviri adayını seç | Kaynak, lisans, boyut ve Android uygulanabilirliği doğrulanmış |
 | A05 | Tek görselin ONNX vektörünü üret | Sabit görsel için referans çıktıyla sayısal karşılaştırma geçiyor |
