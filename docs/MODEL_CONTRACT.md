@@ -1,129 +1,174 @@
-# A03 — Model girdi ve çıktı sözleşmesi
+# A04.2 - Çok dilli CLIP model sözleşmesi
 
-İnceleme ve kullanıcı kararı: 23 Kasım 2026. Belge sürümü: `a03-openclip-reference-v1`.
+Sözleşme sürümü: `multilingual-clip-v1`. Durum: kaynaklar ve arayüz kuralları sabitlendi. Bu belge **A05/A06 için etkin sözleşmedir**; A05 görsel dalı masaüstünde ve API 35 emülatöründe doğrulandı. Metin çıkarımı ve galeri entegrasyonu bekliyor; [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) kapsamı ve sınırları açıklar.
 
-Durum: A03 kaynak incelemesi ve sözleşme belgelemesi tamamlandı. Bu belge çalışan model entegrasyonu veya cihazda ölçülmüş doğruluk sonucu değildir. Android adaptörleri henüz uygulanmadı.
+Makine tarafından okunabilir kurallar ve kaynak özetleri [MODEL_CONTRACT.json](MODEL_CONTRACT.json), gerçek tokenizer örnekleri [TOKENIZER_REFERENCE_CASES.json](TOKENIZER_REFERENCE_CASES.json) dosyasındadır. Önceki adayın incelemesi [MobileCLIP arşivinde](MOBILECLIP_MODEL_CONTRACT.md) korunur.
 
-## Amaç ve karar
+## 1. Seçilen uyumlu model çifti
 
-Mevcut MobileCLIP2-S0 adayının görsel/metin çiftini değiştirmeden, girdilerin hazırlanmasında model dışa aktarıcısının Python/OpenCLIP referansı esas alınacaktır. PicQuery uygulaması yaklaşım ve entegrasyon referansıdır; onun Dart ön işlemesi doğruluk ölçütü olarak birebir kopyalanmayacaktır.
-
-Kullanıcıya üç seçenek sunuldu:
-
-1. OpenCLIP referans akışını esas almak — önerilen ve kullanıcı tarafından seçilen seçenek.
-2. PicQuery uygulamasının akışını birebir izlemek.
-3. İki akışı ayrı deneyle karşılaştırıp sonra seçmek.
-
-Karar gerekçesi: kaynaklarda küçük görsellerin ölçeklenmesi ve tokenizer davranışı bakımından farklar bulundu. Modelin kendi referansıyla karşılaştırılabilir bir başlangıç seçildi. Android'de eşdeğerlik A05/A06 sırasında ölçülecek.
-
-## Sabit referanslar
-
-| Kaynak | Sabit sürüm | Rol |
+| Rol | Kaynak | Sabit revision |
 |---|---|---|
-| [PicQuery](https://github.com/greyovo/PicQuery/tree/ba83267b06d48b11fc991d9d37a5dd186fa1c477) | `ba83267b06d48b11fc991d9d37a5dd186fa1c477` | Uygulama ve ONNX çağrı referansı |
-| [picquery-models](https://github.com/greyovo/picquery-models/tree/4efa0ea182641611aeff68d3a06ff4e8ddf6503a) | `4efa0ea182641611aeff68d3a06ff4e8ddf6503a` | Dışa aktarma kodu ve birlikte gelen OpenCLIP referansı |
-| [Apple ml-mobileclip](https://github.com/apple/ml-mobileclip/tree/48faa0fea4b08d74188b3841771aca6ff2c92852) | `48faa0fea4b08d74188b3841771aca6ff2c92852` | Model yapılandırması ve lisans karşılaştırması |
-| [Apple MobileCLIP2-S0](https://huggingface.co/apple/MobileCLIP2-S0/tree/3136ea51c8ed56b9f9abfab04cb816735aaad6cb) | `3136ea51c8ed56b9f9abfab04cb816735aaad6cb` | Orijinal checkpoint kaynağı |
-| [timm OpenCLIP paketi](https://huggingface.co/timm/MobileCLIP2-S0-OpenCLIP/tree/095906d28bf54d7584dc411e8ffe448f34289e05) | `095906d28bf54d7584dc411e8ffe448f34289e05` | Dışa aktarıcının varsayılan ağırlık kaynağı ve ön işleme yapılandırmasının karşılaştırılması |
+| Çok dilli metin | `sentence-transformers/clip-ViT-B-32-multilingual-v1` | `58edf8cada9e398793dca955574a48cbb7f18be2` |
+| Görsel | `sentence-transformers/clip-ViT-B-32` içindeki CLIP ViT-B/32 görsel dalı | `327ab6726d33c0e22f920c83f2ff9e4bd38ca37f` |
 
-Kaynak URL'leri, indirilen kaynakların SHA-256 değerleri ve sunucunun yayımladığı ağırlık metadata'sı [MODEL_REFERENCES.json](MODEL_REFERENCES.json) dosyasında bulunur. Dal adı veya `main/master` indirme bağlantısı bir sürüm sabitlemesi sayılmaz.
+Kullanıcı bu çifti seçti; ayrı çeviri katmanı kullanılmayacak. Çok dilli metin kodlayıcısı yukarıdaki görsel uzaya hizalıdır. Görsel ve metin çıktıları 512 boyutludur; boyut eşitliği başka modellerle uyumluluk anlamına gelmez.
 
-## Model çifti ve dosyalar
+Kaynak görsel paketinin orijinal İngilizce metin dalı kullanılmayacak. MobileCLIP görsel kodlayıcısı, CLIP BPE, 77 token ve 256 piksel kuralları bu sözleşmenin parçaları değildir.
 
-[Dışa aktarıcı](https://github.com/greyovo/picquery-models/blob/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/export_mobileclip_models.py), `MobileCLIP2-S0` / `dfndr2b` modelinin aynı yüklenmiş örneğinden `model.visual` ve `model.text` parçalarını çıkarır. Çıkarımdan önce model `eval()` durumuna alınır ve yeniden parametreleştirilir. Birbiriyle bağımsız modeller birleştirilmeyecektir.
+## 2. Varlıklar ve doğrulama durumu
 
-| Varlık | Kaynak ve durum |
+Kaynak revision'ları ve dosya adları birlikte sabittir. Her dosyanın yayımlanmış veya yerelde hesaplanmış SHA-256 değeri JSON sözleşmesinde tutulur.
+
+| Varlık | Rol | Bu görevdeki durum |
+|---|---|---|
+| Görsel depo: `0_CLIPModel/model.safetensors` | Görsel modelin kaynak ağırlık paketi | İndirildi; 605157884 bayt ve SHA-256 doğrulandı |
+| Görsel depo: `0_CLIPModel/config.json` | Model ve 768 -> 512 görsel projeksiyon yapılandırması | Yerel dosya özeti doğrulandı |
+| Görsel depo: `0_CLIPModel/preprocessor_config.json` | 224 piksel ve CLIP normalizasyon ayarları | Yerel dosya özeti doğrulandı |
+| Metin depo: `model.safetensors` | FP32 DistilBERT referans gövdesi | Sunucu özeti/boyutu kayıtlı; ağırlık indirilmedi |
+| Metin depo: `onnx/model_qint8_arm64.onnx` | Yayımlanan INT8 metin gövdesi adayı | Sunucu özeti/boyutu kayıtlı; dosya ve gerçek grafiği okunmadı |
+| Metin depo: `2_Dense/model.safetensors` | Zorunlu metin projeksiyon ağırlığı | Sunucu özeti/boyutu kayıtlı; ağırlık indirilmedi |
+| Metin depo: `tokenizer.json`, `vocab.txt`, özel token/config dosyaları | Gerçek cased WordPiece tanımı | İndirildi; sözlük ve özetler karşılaştırıldı |
+| Metin depo: `modules.json`, pooling/Dense config | Metin zincirinin modül sırası | Yerel dosya özetleri doğrulandı |
+
+605 MB civarındaki kaynak CLIP paketi görsel ve orijinal İngilizce metin dallarını birlikte içerir; yalnız görsel ONNX boyutu gibi sunulmaz. Yayımlanan INT8 dosyası yalnız metin Transformer gövdesidir; son cümle vektörü için pooling ve Dense gerekir.
+
+A05'te `clip_vit_b32_visual_fp32.onnx` üretildi: 351610456 bayt, SHA-256 `4bd22c1cab0e6b2a725a3d9e729c3a3c0338f5a2ecf34349cbed4c6aeaeb17bd`. Kaynak checkpoint ve ONNX özetleri ayrı ayrı doğrulandı. Model çalışma dizinindedir; Git veya APK içine eklenmedi.
+
+## 3. Referans uygulama ve sürümler
+
+Referans kod: Sentence Transformers `5.1.2` ve Transformers `4.57.1` kaynakları. Çekirdek Python oracle sürümleri: PyTorch `2.9.1`, Tokenizers `0.22.1`, Pillow `12.0.0`, NumPy `2.4.0`, ONNX `1.19.1`, ONNX Runtime `1.23.2`.
+
+Bu sürümlerle A05 görsel referansı çalıştırıldı. Sabit CLIP yapılandırması ve görsel/projeksiyon ağırlıkları Transformers CLIPVisionModelWithProjection ile doğrudan yüklendi; processor, PyTorch ve ONNX Runtime CPU çıktıları karşılaştırıldı. [Çalıştırma araçları](../tools/README.md) ve doğrulama JSON'u gerçek ortamı kaydeder. Doğrudan paket sürümleri sabittir; bütün transitif bağımlılıkların platformlar arası kilidi oluşturulmadı. Metin modeli henüz çalıştırılmadı.
+
+Oracle CPU ve FP32 ile `eval()`/çıkarım modunda çalışacak. Rastgele başlatılmış model veya dropout açık çıktı karşılaştırma referansı sayılmaz. Hızlandırıcı ve nicemleme farkları aynı testmiş gibi karıştırılmaz.
+
+## 4. Görselin kanonik hazırlanması
+
+Model processor'ından önce uygulama girdisi, yönü düzeltilmiş opak 8-bit RGB görüntü olarak tanımlanır:
+
+1. EXIF yön/ayna dönüşümü bir kez uygulanır. Oracle örneği `ImageOps.exif_transpose`; Android decoder zaten uyguladıysa ikinci kez uygulanmaz.
+2. Alfa içeren görsel beyaz arka plan üzerine birleştirilip RGB yapılır. Bu, GaleriAra'nın decoder sınırıdır; kaynak modelin kendiliğinden alfa/EXIF işlediği iddiası değildir.
+3. İlk referanslar 8-bit sRGB PNG/JPEG ve alfa PNG üzerinde hazırlanır. HDR, farklı renk uzayları veya diğer decoder yolları doğrulanmadan aynı doğruluk kapsamına dahil edilmez; okunamayan görsel kontrollü hata üretmelidir.
+
+Bu sınırdan sonraki model processor akışı:
+
+1. Kısa kenar **224** olacak şekilde en-boy oranı korunur; küçük görseller de büyütülür.
+2. Uzun kenar `int(224 * uzun / kısa)` ile belirlenir; yukarı yuvarlanmaz. Örneğin 320 x 240 görüntü 298 x 224 olur.
+3. **Pillow BICUBIC**, kaynak ayardaki `resample = 3`, kullanılır. Bilinear veya rastgele Android resize varsayılanı eşdeğer kabul edilmez.
+4. Merkezden 224 x 224 kırpılır: `left = (width - 224) // 2`, `top = (height - 224) // 2`. Tek piksel fazlası varsa konum tam sayı bölümüyle belirlenir.
+5. RGB baytları 255'e bölünür; Float32 dönüşümünden sonra aşağıdaki kanal normalizasyonu uygulanır:
+
+| Kanal | Mean | Std |
+|---|---|---|
+| R | 0.48145466 | 0.26862954 |
+| G | 0.45782750 | 0.26130258 |
+| B | 0.40821073 | 0.27577711 |
+
+Formül: `normalized[c] = (pixel[c] / 255 - mean[c]) / std[c]`. Kaynak helper ölçeklemeyi Float64 üzerinden yapıp Float32'ye indirger; son normalizasyon Float32'dir. Tamamen siyah piksellerin model girdisi sıfır vektörü değildir.
+
+Tensör RGB/CHW düzeninde Float32 `[1,3,224,224]`; düz indeks `c*224*224 + y*224 + x`. Önizleme küçük görseli, ekran görüntüsü veya UI ölçeklemesi model girdisi yerine kullanılmaz. Model processor'ı görüntüyü zaten ölçeklemişse 255'e ikinci kez bölünmez.
+
+## 5. Görsel modelin arayüzü
+
+A05'te üretilen görsel grafiğin doğrulanan arayüzü:
+
+| Özellik | Kural |
 |---|---|
-| `mobileclip2_s0.pt` | Apple'ın sabit model deposunda 299.864.852 bayt; sunucu LFS SHA-256: `bc3bc861baa680df2f9e3dc1aa0acbe5a21af21032df385026dda70c33505aa6` |
-| `mobileclip2_s0_visual.onnx` | Sabit dışa aktarıcının beklenen görsel çıktısı; çoğunlukla FP16 parametreler, FP32 giriş/çıkış |
-| `mobileclip2_s0_text.onnx` | Aynı dışa aktarmanın beklenen metin çıktısı; MatMul/Gather için kanal bazlı dinamik INT8 ağırlık nicemleme, FP32 çıkış |
-| `bpe_simple_vocab_16e6.txt.gz` | Sabit OpenCLIP kaynağı; yerel SHA-256: `924691ac288e54409236115652ad4aa250f48203de50a9e4722a6ecd48d6804a` |
+| Hedef dosya | `clip_vit_b32_visual_fp32.onnx` |
+| Girdi | `pixel_values`, Float32 `[N,3,224,224]` |
+| Çıktı | `image_features`, Float32 `[N,512]` |
+| İlk uygulama | `N = 1`; yalnız batch ekseni dinamik |
+| Dışa aktarma hedefi | Opset 17, FP32, eager attention; gerçek dosya metadata'sı ayrıca kontrol edilir |
 
-Checkpoint indirilmedi; belirtilen checkpoint özeti sunucunun metadata'sından okundu ve yerel ağırlık doğrulaması yapılmadı. ONNX dosyaları üretilmedi veya indirilmedi; bu nedenle onların SHA-256 değerleri henüz yoktur. Dışa aktarıcı commit'i, üretilen ONNX dosyasının özeti yerine geçmez.
+Çıktı, CLIP `vision_model` havuzlanmış 768 boyutlu temsilinin **`visual_projection`** katmanından geçirilmiş ham 512 boyutlu hâlidir. Son projeksiyon atlanmayacak; orijinal İngilizce text model çağrısı eklenmeyecek. Görsel grafikte L2 normalizasyonu zorunlu değildir; uygulama sınırında ortak normalizasyon uygulanır.
 
-Dışa aktarıcı yerel checkpoint varsa onu, yoksa `timm/MobileCLIP2-S0-OpenCLIP` kaynağını kullanabiliyor. A05'te kullanılan gerçek ağırlık dosyası açıkça belirtilecek; hareketli etiketle sessiz indirme kullanılmayacak. Apple ve timm dosyalarının sayısal eşdeğerliği bu görevde sınanmadı; alternatif metadata'nın kaydedilmesi eşdeğerlik iddiası değildir.
+Bu arayüz ONNX checker ve gerçek ONNX Runtime oturum metadata'sıyla doğrulandı. Masaüstü ve Android aynı dosya özetini kullanarak sabit görsel karşılaştırmasını geçti.
 
-## Beklenen ONNX arayüzü
+## 6. Türkçe tokenizer sözleşmesi
 
-Bu tablo indirilen ONNX grafiğinin incelemesi değil, sabit dışa aktarma kodu ve yapılandırmadan çıkarılan beklentidir. A05/A06 gerçek oturum metadata'sını bu tabloyla karşılaştırmalıdır.
+Kaynak: sabit metin deposunun `tokenizer.json` dosyası ve Sentence Transformers `Transformer.tokenize()` akışı.
 
-| Özellik | Görsel kodlayıcı | Metin kodlayıcı |
-|---|---|---|
-| Dosya | `mobileclip2_s0_visual.onnx` | `mobileclip2_s0_text.onnx` |
-| Girdi adı | `image` | `text` |
-| Girdi tipi | Float32 | Int64 |
-| Girdi şekli | `[batch, 3, 256, 256]` | `[batch, 77]` |
-| Çıktı adı | `image_features` | `text_features` |
-| Çıktı tipi/şekli | Float32 `[batch, 512]` | Float32 `[batch, 512]` |
-| Uygulamanın ilk hedefi | `batch = 1` | `batch = 1` |
+- Metin kaynaktaki `str.strip()` davranışıyla uç boşluklarından arındırılır. Modelin casing'i korunur; Türkçe veya İngilizce küçük harfe çevirme, çeviri, HTML çözümü, ftfy veya ek NFC/NFKC dönüşümü eklenmez.
+- BertNormalizer: `clean_text = true`, Chinese karakter ayırma açık, `lowercase = false`, `strip_accents = null`. Bu cased profilde aksanlar korunur. Kontrol karakteri/boşluk işlemleri tokenizer'a aittir.
+- BertPreTokenizer ve WordPiece; devam parçası `##`, kelime başına üst sınır 100 karakter. Kaynak sözlükte **119.547** öğe vardır.
+- `[PAD]=0`, `[UNK]=100`, `[CLS]=101`, `[SEP]=102`, `[MASK]=103`.
+- Tek sorgu biçimi `[CLS] + içerik + [SEP]`. Üst sınır özel token'lar dahil **128**; en çok 126 içerik token'ı. Kesme sağdan, kaynak ayarı `longest_first`; son `[SEP]` korunur.
+- Tek sorgu için esas profil dinamik uzunluktur: `S = 2..128`. Sabit 128 profili kullanılırsa sağa 0 dolgusu yapılır; dolgu attention mask'i 0 olmalıdır. Her iki profil referans örneklerinde doğrulanmıştır.
+- `input_ids` ve `attention_mask` Int64 `[1,S]`. Gerçek token'lar ile `[CLS]/[SEP]` maskesi 1; dolgular 0. DistilBERT metin çağrısına `token_type_ids` gerekmez.
 
-Dışa aktarma ONNX opset 18 kullanır ve yalnız batch eksenini dinamik tanımlar. Görsel ve token uzunluğu sabittir. CLIP metin grafiği için ayrıca bir `attention_mask` girdisi bu dışa aktarıcı tarafından tanımlanmamıştır. Parametrelerin FP16/INT8 olması uygulama girdilerinin de bu türlerde olacağı anlamına gelmez.
+Doğrulanmış bir örnek: `kırmızı bir araba` -> `[101,179,52401,10561,45131,10113,102]`. Boş metin tokenizer düzeyinde `[101,102]` üretir; mevcut `SearchPhotos` boş sorguyu model çağrısından önce reddeder.
 
-## Görsel hazırlama sözleşmesi
+`I` + birleşen nokta gibi Unicode dizilerinin, görsel olarak benzer başka dizilerle aynı token'ı vereceği varsayılmayacak. Ek normalizasyon eklemek bu sözleşmeyi değiştirir; fixture'larla tam eşleşme aranır.
 
-Referans: sabit dışa aktarıcının `load_reference()` fonksiyonu, birlikte gelen [pretrained.py](https://github.com/greyovo/picquery-models/blob/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/pretrained.py) ve [transform.py](https://github.com/greyovo/picquery-models/blob/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/transform.py).
+## 7. Metin gövdesi, pooling ve Dense
 
-1. Referans görüntü RGB olarak hazırlanır. Kaynak örnekleri PIL `convert("RGB")` kullanır.
-2. En-boy oranı korunarak kısa kenar 256 piksele getirilir. `resize_mode = shortest`, interpolasyon `bilinear` kullanılır. Küçük görseller de büyütülür.
-3. Merkezden 256 × 256 kırpılır. Boyut yuvarlama, kırpma koordinatı ve yeniden örnekleme davranışı Python referansına göre karşılaştırılmalıdır; yalnız aynı yöntem adını kullanmak piksel eşitliği kanıtı değildir.
-4. RGB kanalları CHW düzeninde Float32 tensöre çevrilir. Her kanal değeri 255'e bölünür; girdi aralığı `[0,1]` olur.
-5. S0 için mean `(0,0,0)`, std `(1,1,1)` olduğundan ayrıca ImageNet veya standart CLIP mean/std dönüşümü uygulanmaz.
-6. Tek görsel için şekil `[1,3,256,256]` olur. Düz dizide R düzlemi, ardından G ve B düzlemleri bulunur; indeks `c*256*256 + y*256 + x` biçimindedir.
+Kaynak zincir `Transformer -> Pooling -> Dense` biçimindedir. Normalizasyon sonradan uygulanan ortak arama işlemidir.
 
-EXIF ve saydamlık sınırı: incelenen Python örneği EXIF dönüşünü açıkça uygulamıyor; PicQuery de yönü codec'e bırakıyor. Bu yüzden platformların aynı görüntü yönünü ürettiği varsayılmayacak. A05'in ilk sayısal örneği EXIF yönü olmayan opak RGB görsel olacak. EXIF'li JPEG, saydam görsel ve decoder/renk dönüşümü davranışları Android adaptörü kabul edilmeden ayrıca doğrulanacak. Bu belge tüm görüntü biçimleri için decoder eşdeğerliğini kanıtlamaz.
+| Bileşen | Beklenen tür/şekil ve işlem |
+|---|---|
+| Metin gövdesi | Int64 `input_ids`, `attention_mask` `[N,S]` -> Float32 token temsilleri `[N,S,768]` |
+| Pooling | Maskeli ortalama -> Float32 `[N,768]` |
+| Dense | Float32 `[512,768]` ağırlık; bias yok; Identity -> ham `[N,512]` |
+| Normalizasyon | Sonlu ve sıfır olmayan 512 vektöre L2 |
 
-## Metin ve tokenizer sözleşmesi
+Pooling formülü: `p[j] = sum_t(h[t,j] * mask[t]) / max(sum_t(mask[t]), 1e-9)`. **Yalnız padding dışlanır; maskesi 1 olan `[CLS]` ve `[SEP]` ortalamaya dahildir.** Yalnız `[CLS]` almak veya özel token'ları keyfi çıkarmak referansı değiştirir.
 
-Referans: aynı dışa aktarma deposundaki [OpenCLIP tokenizer.py](https://github.com/greyovo/picquery-models/blob/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/tokenizer.py). Model yapılandırması bağlam uzunluğunu 77, sözlük boyutunu 49.408 olarak tanımlar.
+Dense formülü: `y[d] = sum_j(W[d,j] * p[j])`; `W` saklama şekli `[512,768]`. Boyutları ters okumak veya ek tanh/bias uygulamak hatadır. Bu ağırlık aynı sabit metin deposundaki `2_Dense` varlığından alınacak.
 
-1. Varsayılan `clean = lower`: `ftfy.fix_text`, iki kez HTML entity çözümü, uç boşlukların temizlenmesi, ardışık boşlukların tek boşluğa dönüştürülmesi ve küçük harfe çevirme sırası izlenir. Kotlin'de Türkçe cihaz yereline bağlı küçük harfe çevirme uygulanması referansla eşdeğer kabul edilmeyecek.
-2. Özel token'ları, İngilizce kısaltmaları, Unicode harfleri, tek tek rakamları ve noktalama gruplarını tanıyan kaynak regex kullanılır.
-3. UTF-8 baytları CLIP byte-to-Unicode eşlemesine çevrilir. Kelimenin son parçasına `</w>` eklenir ve sıralı BPE birleştirmeleri uygulanır.
-4. Kaynak gzip dosyasının başlık sonrası **ilk 48.894 birleştirmesi** kullanılır: Python kaynak dilimi `merges[1:49152-256-2+1]`. Dosyadaki tüm birleştirmeleri okumak eşdeğer değildir.
-5. Başlangıç token'ı 49.406, bitiş token'ı 49.407, dolgu 0'dır. En fazla 75 içerik token'ı kullanılır. Uzun girdide bitiş token'ı son konumda korunur; çıktı tam 77 elemanlıdır.
-6. Model girdisi Int64 `[1,77]` olur. Boş metnin tokenizer çıktısı başlangıç + bitiş + dolgu olabilir; uygulamanın mevcut `SearchPhotos` sınıfı boş arama sorgusunu ayrıca reddeder.
+Yayımlanan INT8 dosyası henüz açılmadığından gerçek input/output adları doğrulanmış değildir. Beklenen rol adları `input_ids`, `attention_mask`, `last_hidden_state`; A06 oturum metadata'sını kontrol edip rol eşlemesini kaydedecek. İlk output'u denetimsiz seçmek, token temsillerini son cümle vektörü saymak veya 768 boyutu 512'ye kesmek kabul edilmez.
 
-A06'da Kotlin token kimlikleri Python referansıyla **tam eşit** olmalıdır. Örnekler: `a photo of a cat` için başlangıç kısmı `[49406,320,1125,539,320,2368,49407]`; `fjord` içerik token'ları `[31260,323]`; `gorillas` içerik token'ları `[1747,23404]`. Son iki örnek kaynak algoritmasından türetilmiştir; Android veya tam OpenCLIP runtime çalıştırması sonucu değildir. HTML, Unicode, özel token ve uzun metin örnekleri de karşılaştırmaya dahil edilmelidir.
+INT8 gövde Float32 token temsilleri vermelidir; çıktı türü dosyadan doğrulanacak. Nicemleme sadece aynı metin modelinin uygulama varyantıdır; farklı model veya farklı Dense ile birleştirme izni değildir.
 
-## PicQuery'den ayrılan doğrulanmış noktalar
+## 8. Ortak vektör ve model kimliği
 
-| Konu | PicQuery uygulaması | Seçilen OpenCLIP referansı |
-|---|---|---|
-| Küçük görsel | Ölçek en fazla 1; küçük görsel büyütülmez, siyah dolgu yapılır | Kısa kenar 256'ya büyütülür, merkez kırpılır |
-| Yeniden örnekleme | Flutter codec hedef boyutlarla çağrılır | Kaynak transform içinde bilinear tanımlıdır |
-| Metin temizleme | Dart tokenizer doğrudan `toLowerCase()` kullanır | ftfy, HTML ve boşluk temizleme de bulunur |
-| BPE kuralları | 262.144 satırın tamamı yüklenir; sözlükte bulunmayan parça atlanır | İlk 48.894 birleştirme ve onlardan kurulan sözlük kullanılır |
-| Özel token yazımı | Sözlükte `<\|startoftext\|>` / `<\|endoftext\|>` | Kaynakta `<start_of_text>` / `<end_of_text>`; sayısal kimlikler aynıdır |
+Ham görsel ve metin vektörü 512 sonlu Float32 değerden oluşur. Sıfır norm geçersizdir. Arama için `v / sqrt(sum(v_i^2))` kullanılır. Mevcut `core/Embedding` bu doğrulama ve normalizasyonu zaten yapar; bunun için yeni bir mimari katman eklenmez.
 
-Kaynaklar: [PicQuery görsel ön işleme](https://github.com/greyovo/PicQuery/blob/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/image_preprocess.dart) ve [Dart tokenizer](https://github.com/greyovo/PicQuery/blob/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/clip_tokenizer.dart). Kaynaklardan türetilen kontrolde `fjord</w>` ve `gorillas</w>` fazla kurallarla tek parçaya birleşip sözlükte bulunmadığı için atlanır. Bu fark, PicQuery tokenizer'ını değişikliksiz taşımanın referans uyumunu sağlamadığını gösterir; genel arama başarımı bu görevde ölçülmemiştir.
+Arama skoru normalize vektörlerin nokta çarpımıdır. CLIP `logit_scale`, softmax ve sınıf olasılığı üretimi top-k fotoğraf sıralamasına eklenmez.
 
-## Vektör ve mevcut çekirdekle ilişki
+`ModelIdentity.id` önerilen sabit aile adı: `clip-vit-b32-multilingual-v1`; `dimensions = 512`. Nihai `revision`, canonical JSON bileşen manifestinin SHA-256 değeri olacak. Canonical JSON: UTF-8, anahtarlar sıralı, gereksiz boşluk yok; manifest gerçek görsel ONNX, metin ONNX, Dense ve tokenizer özetlerini, ön işleme/pooling/normalizasyon profilini içerir. Hesaplanan revision kendi hash girdisine eklenmez.
 
-Her iki ONNX çıktısı 512 boyutlu ham vektördür. Aramada kullanılmadan önce L2 normalizasyonu gerekir. Mevcut `core/Embedding` zaten boyut, sonlu değer ve sıfır norm kontrolü yapıp normalize eder; yalnız model bağlamak için yeni normalizasyon katmanı gerektiren bir karar alınmadı.
+Görsel ONNX özeti artık kayıtlıdır; metin ONNX ve Dense doğrulanmadan nihai runtime revision oluşturulmaz. Bu belgenin sürümü veya kaynak commit'i onun yerine yazılmaz. A05 prototip çıktısı, model çiftinin bütün varlıkları doğrulanmadan kalıcı galeri indeksi olarak sunulmaz. Model veya profil değiştiğinde eski ve yeni vektörler karıştırılmaz.
 
-Görsel ve sorgu `Embedding` nesnelerinin `ModelIdentity(id, revision, dimensions)` değerleri aynı olmalıdır; `dimensions = 512` bu sözleşmede doğrulanmıştır. `id` ortak model ailesini/çiftini, `revision` ise gerçek görsel/metin dosyaları, tokenizer ve ön işlemenin birlikte uyumlu sürümünü temsil eder. Sadece model adının aynı olması yeterli değildir.
+## 9. Sayısal kabul kuralları
 
-`a03-openclip-reference-v1` bu belgenin sürümüdür; henüz üretilememiş ONNX dosyalarının nihai çalışma zamanı kimliği değildir. A05/A06'da gerçek dosya özetleri kaydedildikten sonra somut kimlik değeri kesinleştirilecek. Bu görev mevcut `Search.kt` veya Room şemasını değiştirmez.
+Aşağıdaki eşikler bu entegrasyon için önceden belirlenen mühendislik kabul bütçeleridir; bu görevde ölçülüp geçilmiş model sonuçları değildir. Tüm vektör karşılaştırmalarında önce boyut, sonlu değerler ve pozitif norm doğrulanır.
 
-## Lisans ve dosya kökeni
+| Kontrol | Kabul kuralı |
+|---|---|
+| Tokenizer, kesme ve maskeler | Bütün fixture kimlikleri ve maskeleri birebir eşit |
+| Aynı 224 RGB baytlarının tensöre dönüşümü | Float32 girdide en büyük mutlak hata <= `1e-6` |
+| Kanonik RGB'den resize/crop | Boyut ve kırpma koordinatı tam aynı; referans RGB'ye göre kanal başına en çok 2/255 seviye farkı. Normalize tensörde her kanal sınırı `2/(255*std[c])` |
+| FP32 PyTorch -> FP32 görsel ONNX, aynı tensör | Cosine >= `0.99999`, ham vektörde göreli L2 <= `0.001` |
+| Aynı ONNX + aynı tensör, desktop CPU -> Android CPU | Cosine >= `0.99999`, ham vektörde göreli L2 <= `0.001` |
+| Decoder dahil sabit dosyanın tam görsel akışı | Aynı yön, kırpma ve RGB politikası; son vektör cosine >= `0.999`, göreli L2 <= `0.02` |
+| INT8 metin zinciri -> FP32 referans, aynı token/maskeler | Son Dense çıktısında cosine >= `0.99`, ham vektörde göreli L2 <= `0.15` |
+| Son normalize vektör | `abs(norm - 1) <= 1e-5` |
 
-PicQuery uygulama kodu MIT lisanslıdır. Model ağırlıkları aynı lisansa tabi varsayılmayacaktır: Apple model kartı `apple-amlr` bildirir ve sabit [LICENSE_MODELS](https://github.com/apple/ml-mobileclip/blob/48faa0fea4b08d74188b3841771aca6ff2c92852/LICENSE_MODELS) ayrı koşullar içerir. Apple deposu, Apple checkpoint deposu ve dışa aktarma deposundaki model lisansı dosyalarının SHA-256 değerleri aynıdır: `30c59d255d2b4075ba11b81ce5aa0109c28d28138d66d52f7f5d8cbba814df8b`.
+Göreli L2: `norm(actual - reference) / norm(reference)`; cosine ham vektörlerin normalize nokta çarpımıdır. INT8 kontrolü token gövdesine bakmakla bitmez; pooling ve Dense dahil son vektör ölçülür. Sabit/dinamik padding eşdeğerliği de aynı modelin referansıyla karşılaştırılır.
 
-Birlikte gelen [OpenCLIP kaynak lisansı](https://github.com/greyovo/picquery-models/blob/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/LICENSE) MIT koşullarını içerir; dosya özeti manifestte kayıtlıdır. Bu görevde uygulamaya üçüncü taraf kaynak kodu veya model varlığı eklenmedi. Model paketleme/dağıtımı yapılırken ilgili lisans ve atıf dosyaları da birlikte ele alınmalıdır.
+Eşik aşılırsa hangi aşamanın fark ürettiği araştırılır; sessizce daha gevşek eşik, başka tokenizer veya başka modelle geçilmiş sayılmaz. Arama kalitesi ölçümleri [değerlendirme protokolünde](EVALUATION_PLAN.md) ayrıca tanımlıdır; sayısal yakınlık tek başına Türkçe retrieval başarısı değildir.
 
-## Sonraki görevlerin doğrulama kapıları
+## 10. Referans örnekleri ve bu görevde doğrulananlar
 
-- **A04:** Türkçe sorgu dönüşümü için kaynak/lisans/boyut/Android uygulanabilirliği araştırılır; bu belge çeviri modeli seçmez.
-- **A05:** Kullanılan checkpoint'in indirilen baytları doğrulanır; üretilen görsel ve metin ONNX dosyalarının SHA-256 değerleri kaydedilir. Görsel modelinin gerçek I/O metadata'sı, ön işlem tensörü ve tek görsel çıktısı Python referansıyla karşılaştırılır. EXIF/decoder farkları ayrıca sınanır.
-- **A06:** Kotlin token dizileri referansla tam karşılaştırılır; gerçek metin grafiğinin I/O metadata'sı ve sabit metin vektörü doğrulanır. A05 ile aynı model çifti kullanılır.
-- Dışa aktarma deposunun regresyon eşikleri görsel cosine ≥ 0,9998 / göreli L2 ≤ 0,02 ve metin cosine ≥ 0,99 / göreli L2 ≤ 0,15'tir. Bunlar upstream test ölçütleridir; GaleriAra'da çalıştırılmış sonuç veya kendiliğinden kabul edilmiş Android eşiği değildir.
-- PicQuery kaynaklarında Android CPU/BASIC optimizasyonuyla ilgili deney notları vardır. Bunlar Java/Android oturum ayarlarının bu görevde seçildiği veya doğrulandığı anlamına gelmez; A05'te sürüm ve ayarlar açıkça ele alınmalıdır.
+14 gerçek tokenizer örneği: boş/boşluk metni, Türkçe sorgu/sahne, büyük-küçük harf, Türkçe harfler, birleşen Unicode, noktalama, tab/yeni satır, 100 karakteri aşan kelime, 128 token'a kesilen uzun sorgu, literal özel token ve kontrol karakteri.
 
-## A03 doğrulama kaydı
+`tokenizer.json` ve `vocab.txt` kimlik eşlemesi bütünüyle karşılaştırıldı. Tokenizers `0.22.1` ile gerçek token dizileri üretildi; hem dinamik hem sabit 128 padding/maskeleri kontrol edildi. Bunlar ileride Kotlin tokenizer uygulamasının birebir karşılaştırılacağı referans değerleridir; Kotlin tokenizer testi henüz yapılmadı.
 
-- Sabit Git commit'leri ve model deposu revision'ları API üzerinden okundu.
-- Kaynak dosyaları sabit URL'lerden indirildi; dosya SHA-256 değerleri yerelde hesaplandı.
-- Apple/model dışa aktarma yapılandırmalarında 256 piksel, 77 token ve 512 boyut bilgileri karşılaştırıldı.
-- BPE kaynak dilimi, sözlük ve fazla birleştirme farkı kaynaklardan türetilen örneklerle kontrol edildi.
-- Girdi/çıktı adları ve veri tipleri dışa aktarma kodu ile PicQuery çağrıları üzerinden karşılaştırıldı.
-- Model ağırlığı indirme, ONNX dışa aktarma, çıkarım, Android cihaz testi veya yeni derleme yapılmadı. A03 yalnız belge değişikliğidir.
+Siyah, beyaz, kırmızı ve gri RGB örneklerinde mean/std aritmetiği ayrıca kontrol edildi. Bu aritmetik kontrolü bütün Transformers image processor'ının veya modelin çalıştırılması değildir.
+
+## 11. Kalan işler ve kapsam
+
+- **A05 tamamlandı:** Kaynak ağırlık ve görsel ONNX özeti/I/O doğrulandı; tek opak RGB PNG için Python–masaüstü ONNX–Android karşılaştırması geçti. URI/EXIF/RGBA/HDR ve fiziksel cihaz doğrulaması tamamlanmış sayılmaz.
+- **A06:** Metin gövdesi ve Dense varlıklarını doğrula; Kotlin token kimliklerini fixture'larla karşılaştır; pooling/projeksiyon ve son vektörü FP32/INT8 referansıyla doğrula.
+- **A07 ve sonrası:** Türkçe sorgu akışını mevcut arayüze bağla; model manifesti tamamlandıktan sonra kalıcı indeksleme ve aramayı etkinleştir.
+
+A04.2 kaynak sözleşmesi aşamasında uygulama kodu veya model çıkarımı yoktu. A05 ile görsel ön işleme ve ONNX çalıştırıcısı ile bağımsız referans testi eklendi; ONNX Runtime Android bağımlılığı tanımlandı. Galeri, Room ve arama bağlantısı sonraki görevlerde kalır. Ham görsel çıktı 512 boyutludur; uygulama sınırındaki ortak L2 kuralı korunur.
+
+## Kaynaklar ve lisans kaydı
+
+1. [Sabit çok dilli metin deposu](https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/tree/58edf8cada9e398793dca955574a48cbb7f18be2): tokenizer, modules, pooling/Dense ve model varlıkları.
+2. [Sabit görsel depo](https://huggingface.co/sentence-transformers/clip-ViT-B-32/tree/327ab6726d33c0e22f920c83f2ff9e4bd38ca37f): CLIP ve processor yapılandırmaları.
+3. [Sentence Transformers CLIPModel](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/CLIPModel.py), [Transformer](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/Transformer.py), [Pooling](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/Pooling.py), [Dense](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/Dense.py).
+4. [Transformers CLIP image processor](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/clip/image_processing_clip.py), [image transforms](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/image_transforms.py), [CLIP model](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/clip/modeling_clip.py).
+
+Metin model kartı Apache-2.0 bildirir. Eşleşen görsel kartında ayrı lisans etiketi bulunmadığından kaynak kökeni ve OpenAI CLIP MIT lisans kaydı birlikte izlenir; metin lisansı bütün zincirin lisansı sayılmaz. İndirilen/dağıtılacak somut varlıkların bildirimleri A05/A06'da korunacaktır. Önceki Apple model lisansı yeni modelin lisansı olarak kullanılmaz.

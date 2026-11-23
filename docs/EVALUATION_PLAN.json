@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "status": "planned_not_executed",
+  "model_choice": 1,
+  "image_model": "sentence-transformers/clip-ViT-B-32",
+  "text_model": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+  "translation": null,
+  "dataset": {
+    "source": "XM3600",
+    "source_url": "https://google.github.io/crossmodal-3600/",
+    "image_count": 200,
+    "seed": 42,
+    "frozen_manifest_required": true,
+    "images_acquired": false,
+    "candidate_sources": [
+      "XM3600",
+      "controlled_or_explicitly_permitted_local_gallery",
+      "Flickr30k"
+    ],
+    "secondary_source_selected": false
+  },
+  "queries": {
+    "categories": [
+      "object",
+      "scene",
+      "color",
+      "action",
+      "relation"
+    ],
+    "positive_per_category": 8,
+    "dev_per_category": 2,
+    "test_per_category": 6,
+    "positive_total": 40,
+    "dev_positive_total": 10,
+    "test_positive_total": 30,
+    "negative_controls": 5,
+    "total": 45,
+    "labels_created": false,
+    "semantic_groups_must_not_cross_splits": true
+  },
+  "relevance": {
+    "grades": [
+      0,
+      1,
+      2
+    ],
+    "binary_relevant_grade": 2,
+    "exhaustive_judgments": true,
+    "positive_pairs": 8000,
+    "negative_pairs": 1000,
+    "review_fraction_minimum": 0.1,
+    "judgments_blind_to_rankings": true,
+    "independent_annotators_claimed": false
+  },
+  "methods": {
+    "B0": "Jaccard token overlap on frozen Turkish captions/tags",
+    "B1": "Python FP32 multilingual CLIP with pooling, Dense and visual projection",
+    "B2": "Android/ONNX implementation of the same aligned model pair"
+  },
+  "metrics": {
+    "recall_at": [
+      5,
+      10
+    ],
+    "precision_at": [
+      5
+    ],
+    "hit_at": [
+      5,
+      10
+    ],
+    "ndcg_at": [
+      10
+    ],
+    "ndcg_gain": "2^grade - 1",
+    "ndcg_discount": "log2(rank + 1)",
+    "idcg_scope": "all gallery judgments",
+    "positive_aggregation": "macro mean over 30 held-out positive queries",
+    "negative_controls_in_positive_mean": false,
+    "precision_missing_results": "nonrelevant; denominator remains K",
+    "undefined_empty_relevance_metrics": "exclude negative controls from Recall/nDCG averages",
+    "tie_break": "stable image_id ascending",
+    "semantic_abstention_threshold_selected": false
+  },
+  "performance": {
+    "cold_load_repetitions": 3,
+    "warmup_queries": 5,
+    "test_query_repetitions": 3,
+    "warm_samples": 90,
+    "unchanged_refresh_repetitions": 3,
+    "percentiles": [
+      0.5,
+      0.95
+    ],
+    "percentile_method": "nearest rank: ceil(p*n), one-based",
+    "memory_measure": "app PSS KiB; observed sampled maximum",
+    "phases": [
+      "model_acquisition",
+      "cold_model_load",
+      "image_decode_preprocess",
+      "image_encoding",
+      "catalog_vector_storage",
+      "query_encoding",
+      "vector_loading",
+      "ranking",
+      "ui_end_to_end"
+    ],
+    "emulator_and_physical_device_results_separate": true
+  },
+  "checks": {
+    "query_time_image_encoder_calls_expected": 0,
+    "unchanged_photo_reencoding_expected": 0,
+    "single_changed_photo_reencoding_expected": 1,
+    "numeric_tolerances_task": "A04.2",
+    "no_unmeasured_quality_threshold_claim": true,
+    "numeric_contract": "MODEL_CONTRACT.json",
+    "tokenizer_fixtures": "TOKENIZER_REFERENCE_CASES.json"
+  },
+  "execution_tasks": {
+    "model_contract": "A04.2",
+    "data_preparation": "A14",
+    "measurement": "A15"
+  },
+  "sources": [
+    {
+      "title": "XM3600 project",
+      "url": "https://google.github.io/crossmodal-3600/"
+    },
+    {
+      "title": "XM3600 primary paper",
+      "url": "https://arxiv.org/html/2205.12522v2"
+    },
+    {
+      "title": "Flickr30k project and terms",
+      "url": "https://shannon.cs.illinois.edu/DenotationGraph/"
+    },
+    {
+      "title": "Ranking metrics reference",
+      "url": "https://spark.apache.org/docs/3.5.6/mllib-evaluation-metrics.html"
+    }
+  ]
+}

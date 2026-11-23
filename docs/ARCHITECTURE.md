@@ -21,9 +21,9 @@ Tarih: 26 Ekim 2026. Kapsam: tek geliştirici, Android, Kotlin.
 
 ## Model kararı ve doğrulama kapısı
 
-İlk teknik aday PicQuery ile aynı ailede **MobileCLIP2-S0 görsel + eşleşen metin kodlayıcıları, ONNX Runtime Android**. Bu bir entegrasyon hedefidir; projede model dosyası veya çalışan inference adaptörü henüz yoktur. Türkçe için başlangıç deneyi sorgu çevirisi + eşleşen İngilizce metin kodlayıcısı olacaktır. Çeviri uygulaması ayrı `QueryEncoder` adaptöründe tutulacak.
+Kullanıcı A04'te **standart çok dilli CLIP** seçeneğini seçti: `sentence-transformers/clip-ViT-B-32-multilingual-v1` metin kodlayıcısı ve onunla hizalı `sentence-transformers/clip-ViT-B-32` görsel kodlayıcısı. Çeviri katmanı eklenmeyecek. Çalıştırma hedefi ONNX Runtime Android; model dosyaları ve çalışan adaptör henüz uygulamaya bağlanmadı. Türkçe sorgu ayrıntıları `QueryEncoder` adaptöründe tutulacak.
 
-Çeviri modelinin somut varlığı, tokenizer uyumu, lisansı ve cihaz maliyeti ayrı araştırma görevinin sonucunda seçilecek. PicQuery'nin Çince çeviri modeli Türkçe için kullanılamaz. Görsel ve metin encoder'ı birbirinden bağımsız rastgele modeller olamaz. Doğrudan çok dilli alternatif, başlangıç adayı kabul ölçütlerini karşılamazsa değerlendirilecek.
+Görsel ve metin kodlayıcıları aynı uyumlu uzayda olmalıdır. Çok dilli metin kodlayıcısı önceki MobileCLIP2-S0 görsel kodlayıcısıyla eşleştirilmeyecek. A03'teki inceleme [önceki aday arşivinde](MOBILECLIP_MODEL_CONTRACT.md) korunur; seçilen çiftin A04.2 [etkin sözleşmesi](MODEL_CONTRACT.md) ve [kaynak/kurallar manifesti](MODEL_CONTRACT.json) hazırdır. Sabit kaynaklar ve karar [A04 karşılaştırmasında](A04_TURKISH_QUERY_OPTIONS.md), deney protokolü [değerlendirme planında](EVALUATION_PLAN.md) bulunur.
 
 Model indirmeden veya ana entegrasyonu yazmadan önce:
 
@@ -39,7 +39,13 @@ ML Kit görsel analizini arama anında çalıştırmayacağız. PDF'deki ML Kit 
 
 Kullanıcıya OpenCLIP referansı, PicQuery uygulamasını birebir izleme ve iki akışı ayrı deneyle karşılaştırma seçenekleri sunuldu. Kullanıcı **OpenCLIP referans akışını** seçti. Mevcut MobileCLIP2-S0 + eşleşen metin kodlayıcısı adayı korunur; girdiler sabit dışa aktarma deposunun Python/OpenCLIP referansına göre hazırlanacaktır. PicQuery'nin küçük görseller için dolgu ve tüm BPE birleştirmelerini okuma davranışları birebir taşınmayacaktır.
 
-Sabit sürümler, kaynaklar, beklenen ONNX I/O tanımları ve doğrulama sınırları [model sözleşmesinde](MODEL_CONTRACT.md), SHA-256 kayıtları [kaynak manifestinde](MODEL_REFERENCES.json) bulunur. Bu karar model entegrasyonunu tamamlamaz; gerçek ONNX dosya özetleri ve Android sayısal uyumu A05/A06 sırasında doğrulanacaktır. Türkçe çeviri seçimi A04 kapsamında kalır.
+Sabit sürümler, kaynaklar, beklenen ONNX I/O tanımları ve doğrulama sınırları [önceki aday sözleşmesinde](MOBILECLIP_MODEL_CONTRACT.md), SHA-256 kayıtları [önceki kaynak manifestinde](MODEL_REFERENCES.json) bulunur. Bu karar model entegrasyonunu tamamlamaz; gerçek ONNX dosya özetleri ve Android sayısal uyumu A05/A06 sırasında doğrulanacaktır. Türkçe sorgu işleme yaklaşımı A04 kapsamında kalır; 23 Kasım 2026 ödev incelemesiyle kapsam doğrudan çok dilli modelleri de içerecek şekilde netleştirildi.
+
+## A04 model seçimi ve değerlendirme protokolü
+
+Kullanıcı üç alternatif arasından standart çok dilli CLIP çiftini seçti. Ayrı çeviri modeli kullanılmayacak. Metin tarafında tokenizer -> DistilBERT -> masked mean pooling -> 768/512 Dense -> normalizasyon; görsel tarafında eşleşen CLIP processor ve projeksiyon korunacak. Metin zinciri seçilen entegrasyon kapsamıdır; görsel dalın A05 prototipi aşağıdaki sınırlarla doğrulandı.
+
+Görsel ön işleme, token kimlikleri, hedef I/O ve sayısal toleranslar [etkin model sözleşmesinde](MODEL_CONTRACT.md) sabitlendi. A05/A06 gerçek model dosyaları ve Android çıktılarıyla bu kuralları doğrulamadan tamamlanmaz. Mevcut arama algoritması veya Room şeması bu seçim kaydıyla değiştirilmedi. Geliştirme/test ayrımı, veri seti gerekçeleri ve ölçümler [EVALUATION_PLAN.md](EVALUATION_PLAN.md) dosyasında tanımlıdır.
 
 ## Bileşenler
 
@@ -83,7 +89,7 @@ Bu ayrım yeni bir mimari yaklaşım eklemez; mevcut davranışı onaylanan dosy
 
 WorkManager ile tek benzersiz iş, başlangıçta tek görsel inference işlemi. Kalıcı iş durumu ve hata kayıtları, modeli bağlama görevi sırasında şemaya eklenecek. Başarılı her fotoğrafın vektörü atomik kaydedilecek; yarıda kesilen iş tamamlanmış vektörleri yeniden üretmeyecek. Bozuk fotoğraf atlanabilir; model yükleme hatası bütün işin başarısızlığı olarak ele alınmalı. Coroutine iptali genel hata olarak yutulmamalı.
 
-Mevcut sürümde Worker çalışmaz ve embedding üretilmez. WorkManager bağımlılığı sonraki indeksleme görevi için tanımlıdır.
+Mevcut sürümde Worker çalışmaz ve galeri için kalıcı embedding üretilmez; A05 tek kontrollü görsel için test çıkarımı üretir. WorkManager bağımlılığı sonraki indeksleme görevi için tanımlıdır.
 
 ## Akademik değerlendirme
 
@@ -92,7 +98,13 @@ Mevcut sürümde Worker çalışmaz ve embedding üretilmez. WorkManager bağım
 - Etiket tabanlı arama karşılaştırma yöntemi olarak ayrı deneyde ele alınacak.
 - İlk indeksleme süresi, artımlı güncelleme süresi, model yükleme, sorgu kodlama ve vektör sıralama süreleri ayrı raporlanacak. Arama için p50/p95, bellek ve indeks boyutu ölçülecek.
 - Sayısal başarı eşikleri model deneyi öncesinde belirlenecek; ölçülmemiş performans sonuçları rapora yazılmayacak.
-- Akademik ön rapor bu teknik belgeden üretilecek; bu dosya final rapor değildir. Teslim tarihi bilinmediği için tarihli takvim henüz oluşturulmadı.
+- Akademik ön rapor, PDF'nin bölüm ve biçim koşullarına göre hazırlanacak; bu teknik belge raporun yerine geçmez. Kaynak gereksinimleri, bölüm eşlemesi ve kullanıcı tarafından önerilen 27 Aralık 2026 planlama hedefine göre takvim [ödev ve rapor planında](ASSIGNMENT_REQUIREMENTS.md) kayıtlıdır. Tarih kesin ders teslim tarihi olarak varsayılmaz.
+
+## Ödev belgesiyle ilişki - 23 Kasım 2026
+
+PDF, PicQuery'yi incelenebilecek bir bağlantı olarak verir; aynı modeli veya çeviri yöntemini şart koşmaz. Kullanıcı da bunun yalnız referans olduğunu doğruladı. Temel özgünlük koşulları fotoğrafların önceden analiz edilip Türkçe istemlerle eşleşen indeks oluşturulması ve arama sırasında ML Kit gibi araçların dinamik kullanımına ihtiyaç duyulmamasıdır. ML Kit ifadesi, sorgu zamanı çeviri kullanımına otomatik uygunluk gerekçesi sayılmayacak; seçilen yaklaşımın bu koşulla ilişkisi açıkça belgelenecektir.
+
+Literatürdeki alternatifler, veri seti adayları ve deney planı geliştirme boyunca toplanacak; use case ve teknolojileri gösteren component çizimleri son rapora eklenecek. PDF koşulları ile proje tercihlerinin ayrımı [ASSIGNMENT_REQUIREMENTS.md](ASSIGNMENT_REQUIREMENTS.md) dosyasındadır. Bu kayıt yeni bir model seçimi veya uygulama mimarisi değişikliği değildir.
 
 ## Kaynaklar
 
@@ -101,3 +113,9 @@ Mevcut sürümde Worker çalışmaz ve embedding üretilmez. WorkManager bağım
 3. [Room](https://developer.android.com/jetpack/androidx/releases/room).
 4. [ONNX Runtime Java/Android](https://onnxruntime.ai/docs/get-started/with-java.html).
 5. [AGP 8.13 uyumluluğu](https://developer.android.com/build/releases/agp-8-13-0-release-notes).
+
+## A05 görsel prototipinin sınırı
+
+`data/encoding/ClipImagePreprocessor`, yönü önceden düzeltilmiş Bitmap'i RGB/BICUBIC/merkez kırpma/CLIP normalizasyonu ile Float32 NCHW girdiye dönüştürür. `ClipVisualModel`, doğrulanan SHA-256 ve I/O ile dosyadan ONNX oturumu açar; CPU üzerinde ham 512 boyutlu vektör döndürür, tensör/sonuç/oturum kaynaklarını kapatır. Çağıran taraf arka plan dispatcher'ını seçmelidir. Ortak L2 normalizasyonu `core/Embedding` sınırında kalır.
+
+Bu yardımcılar galeri `ImageEncoder` URI adaptörüne, ViewModel'e, Room'a veya Worker'a bağlanmadı. APK model içermez. Bütün model çiftinin runtime manifesti metin varlıkları doğrulanınca tamamlanabilir. [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) tek kontrollü PNG ve API 35 x86_64 CPU doğrulamasını gösterir; fiziksel ARM cihazı, EXIF/decoder ve galeri başarımı çıkarımı yapılmaz.

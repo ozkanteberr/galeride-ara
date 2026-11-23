@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "task": "A05",
+  "status": "passed",
+  "desktop": {
+    "status": "passed",
+    "contract_version": "multilingual-clip-v1",
+    "source_checkpoint": {
+      "repo": "sentence-transformers/clip-ViT-B-32",
+      "revision": "327ab6726d33c0e22f920c83f2ff9e4bd38ca37f",
+      "path": "0_CLIPModel/model.safetensors",
+      "bytes": 605157884,
+      "published_sha256": "99d28a652e6ec46629ab7047a0ac82c69b1fe11e0ce672c43af65d3a9a3fc05d",
+      "locally_verified": true,
+      "downloaded": true
+    },
+    "artifact": {
+      "filename": "clip_vit_b32_visual_fp32.onnx",
+      "sha256": "4bd22c1cab0e6b2a725a3d9e729c3a3c0338f5a2ecf34349cbed4c6aeaeb17bd",
+      "bytes": 351610456,
+      "opset": 17,
+      "dtype": "float32",
+      "visual_projection_included": true
+    },
+    "input": {
+      "name": "pixel_values",
+      "type": "tensor(float)",
+      "shape": [
+        "batch",
+        3,
+        224,
+        224
+      ]
+    },
+    "output": {
+      "name": "image_features",
+      "type": "tensor(float)",
+      "shape": [
+        "batch",
+        512
+      ]
+    },
+    "comparison": {
+      "cosine": 0.9999999999984639,
+      "relative_l2": 1.785596606898163e-06,
+      "max_abs_error": 6.67572021484375e-06,
+      "reference_norm": 11.83948411524452,
+      "actual_norm": 11.839488166494952
+    },
+    "single_inference_ms": 215.85230001073796,
+    "timing_is_benchmark": false,
+    "android_verified": true,
+    "environment": {
+      "torch": "2.9.1",
+      "torchvision": "0.24.1",
+      "transformers": "4.57.1",
+      "tokenizers": "0.22.1",
+      "Pillow": "12.0.0",
+      "numpy": "2.4.0",
+      "onnx": "1.19.1",
+      "onnxruntime": "1.23.2",
+      "safetensors": "0.7.0"
+    },
+    "fixture": {
+      "model_sha256": "4bd22c1cab0e6b2a725a3d9e729c3a3c0338f5a2ecf34349cbed4c6aeaeb17bd",
+      "image_sha256": "a8b9365309b7c3e20c7b52a6b6e5d24ac92acddbaff005c9ddb00dd1ee0df5df",
+      "input_sha256": "47ca04ed00e313602db545710cde07c95916ac3c990a987a973d0efe97025624",
+      "reference_sha256": "76c7664bc6ee1d724763cd070fc825d93286410495b07dddf1fbe4692c09b4bc",
+      "input_shape": [
+        1,
+        3,
+        224,
+        224
+      ],
+      "output_shape": [
+        1,
+        512
+      ],
+      "dtype": "float32_little_endian",
+      "input_name": "pixel_values",
+      "output_name": "image_features",
+      "desktop_comparison": {
+        "cosine": 0.9999999999984639,
+        "relative_l2": 1.785596606898163e-06,
+        "max_abs_error": 6.67572021484375e-06,
+        "reference_norm": 11.83948411524452,
+        "actual_norm": 11.839488166494952
+      },
+      "source_image": {
+        "width": 320,
+        "height": 240,
+        "origin": "deterministic RGB test pattern; no private image"
+      }
+    }
+  },
+  "android": {
+    "status": "passed",
+    "api": 35,
+    "abi": "x86_64",
+    "model_sha256": "4bd22c1cab0e6b2a725a3d9e729c3a3c0338f5a2ecf34349cbed4c6aeaeb17bd",
+    "input_max_abs_error": 0,
+    "same_tensor_vs_desktop": {
+      "cosine": 1,
+      "relative_l2": 0
+    },
+    "same_tensor_vs_pytorch": {
+      "cosine": 0.9999999999984645,
+      "relative_l2": 1.785596606898163e-06
+    },
+    "full_png_pipeline_vs_pytorch": {
+      "cosine": 0.9999999999984645,
+      "relative_l2": 1.785596606898163e-06
+    },
+    "scope": "controlled RGB PNG; not URI/EXIF/HDR validation"
+  },
+  "build_validation": {
+    "core": {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "instrumentation_tests": 1,
+    "lint_errors": 0,
+    "lint_warnings": 12,
+    "gradle_tasks": [
+      ":core:test",
+      ":app:assembleDebug",
+      ":app:assembleDebugAndroidTest",
+      ":app:lintDebug"
+    ]
+  },
+  "scope": "one controlled opaque RGB PNG; no URI/EXIF/RGBA/HDR, physical ARM, gallery indexing or text inference",
+  "model_distribution": "local work directory only; excluded from APK and Git"
+}

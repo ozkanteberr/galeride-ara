@@ -1,0 +1,824 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-11-23",
+  "status": "complete_user_selected_option_1",
+  "selected_option": 1,
+  "models_downloaded": false,
+  "inference_or_device_benchmarks_run": false,
+  "options": [
+    {
+      "id": 1,
+      "recommended": true,
+      "text_model": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+      "image_model": "sentence-transformers/clip-ViT-B-32",
+      "translation": null
+    },
+    {
+      "id": 2,
+      "recommended": false,
+      "text_model": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+      "image_model": "sentence-transformers/clip-ViT-B-32",
+      "translation": null
+    },
+    {
+      "id": 3,
+      "recommended": false,
+      "image_text_model": "MobileCLIP2-S0 (A03 MODEL_REFERENCES.json)",
+      "translation": "Helsinki-NLP/opus-mt-tr-en"
+    }
+  ],
+  "repositories": [
+    {
+      "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+      "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+      "card_data": {
+        "language": "multilingual",
+        "license": "apache-2.0",
+        "library_name": "sentence-transformers",
+        "tags": [
+          "sentence-transformers",
+          "feature-extraction",
+          "sentence-similarity"
+        ],
+        "pipeline_tag": "sentence-similarity"
+      },
+      "safetensors_info": {
+        "parameters": {
+          "F32": 134734080
+        },
+        "total": 134734080
+      },
+      "weights_metadata_only": [
+        {
+          "rfilename": "2_Dense/model.safetensors",
+          "blobId": "e0f0f633b0263f0c3ef2f094b7f1cf39c5e3810b",
+          "size": 1572984,
+          "lfs": {
+            "sha256": "d12568dc7300970a4d3dbb49068ad16cd89b99840b74b026f8e48071e9414f74",
+            "size": 1572984,
+            "pointerSize": 132
+          }
+        },
+        {
+          "rfilename": "2_Dense/pytorch_model.bin",
+          "blobId": "a89944ef24b7ec3c283886a3a3f1bd8fedaaa5d5",
+          "size": 1573739,
+          "lfs": {
+            "sha256": "616d24a48f22b1097c30423a6054b8ac025fedf31ee9fbb05d5c963c56a14ecf",
+            "size": 1573739,
+            "pointerSize": 132
+          }
+        },
+        {
+          "rfilename": "model.safetensors",
+          "blobId": "d722f84e496c0084b4e2198f5fdd0ea88f9b511e",
+          "size": 538947416,
+          "lfs": {
+            "sha256": "7b968c09938603158413ea2c91af82e82158ebb6db901a6cf97c28ce7d7ebc6d",
+            "size": 538947416,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model.onnx",
+          "blobId": "87a90293ca4037957c1d8bb945ac85bb41d877e1",
+          "size": 539049415,
+          "lfs": {
+            "sha256": "ca09969eb6e0f36fb1622654d1b47ac2025f576794f48b249a50b78d4b70373f",
+            "size": 539049415,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_O1.onnx",
+          "blobId": "ebff1ba1207241ef82315b066164b84528b19856",
+          "size": 539033719,
+          "lfs": {
+            "sha256": "40c72af695247dac8f422e79cc5b34e39d910f89cc9591cda372de84b97c6f86",
+            "size": 539033719,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_O2.onnx",
+          "blobId": "409e82c167fc3388a227b43f3dda7ec646f6b413",
+          "size": 538955829,
+          "lfs": {
+            "sha256": "e2f1ee691e6e9279e990acdf4399ed6f9a564381a1d06ddda66edc0e9f47c71f",
+            "size": 538955829,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_O3.onnx",
+          "blobId": "712b4789fe89e0a5954c081b81fba086beabb42e",
+          "size": 538955889,
+          "lfs": {
+            "sha256": "e1acd84f801ef84403955f63c7bad828fb84a8283f28046dfdd6e1c992384035",
+            "size": 538955889,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_O4.onnx",
+          "blobId": "af439d46648615771d999e0a38b6045df3d6c668",
+          "size": 269490710,
+          "lfs": {
+            "sha256": "c477ffcac84a350f654d0c1b27e68b038056f0922c933b146a67cd301f8092fd",
+            "size": 269490710,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_qint8_arm64.onnx",
+          "blobId": "f92fb5daf2c84ea63286ad81454213e026e59f2e",
+          "size": 135336307,
+          "lfs": {
+            "sha256": "3bed77e83926519660b5c0833cb3321cfde952331edec4f7d501c7d384b8a8a7",
+            "size": 135336307,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_qint8_avx512.onnx",
+          "blobId": "f92fb5daf2c84ea63286ad81454213e026e59f2e",
+          "size": 135336307,
+          "lfs": {
+            "sha256": "3bed77e83926519660b5c0833cb3321cfde952331edec4f7d501c7d384b8a8a7",
+            "size": 135336307,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_qint8_avx512_vnni.onnx",
+          "blobId": "f92fb5daf2c84ea63286ad81454213e026e59f2e",
+          "size": 135336307,
+          "lfs": {
+            "sha256": "3bed77e83926519660b5c0833cb3321cfde952331edec4f7d501c7d384b8a8a7",
+            "size": 135336307,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "onnx/model_quint8_avx2.onnx",
+          "blobId": "746aea22df576865a298adb339413b99fae2ef69",
+          "size": 135377779,
+          "lfs": {
+            "sha256": "fbc8fbeaa5237d96bd1bf430057c70d34de8334a463e933a5faa305f6caeed9c",
+            "size": 135377779,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "openvino/openvino_model.bin",
+          "blobId": "01798ebf1d8a4d6f444b26889596e7fb886f1f68",
+          "size": 538940536,
+          "lfs": {
+            "sha256": "0c5d866bb10b6725acb41bb42dd86c1d9127f6e575d9f69e434b40d8a91ecc28",
+            "size": 538940536,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "openvino/openvino_model_qint8_quantized.bin",
+          "blobId": "0ce0733959fd625cdb104b0ede6978c036ddbd30",
+          "size": 135698052,
+          "lfs": {
+            "sha256": "14a716d633306dfda26e639bc9a040142675c94707096151622f1660cc554995",
+            "size": 135698052,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "pytorch_model.bin",
+          "blobId": "2d9f19569667dff2cb318742c1a330e091061632",
+          "size": 538971577,
+          "lfs": {
+            "sha256": "a220db68008f8d22d5899fbb71f51e95a34bc42402ecb967c8d42b3ab0e5000f",
+            "size": 538971577,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "source_files": [
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+          "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+          "path": "README.md",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/resolve/58edf8cada9e398793dca955574a48cbb7f18be2/README.md",
+          "bytes": 5647,
+          "sha256": "023953714bc8541390994257494d21484994d84e45e01cd96304f0b5f9e770a2"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+          "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+          "path": "config.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/resolve/58edf8cada9e398793dca955574a48cbb7f18be2/config.json",
+          "bytes": 572,
+          "sha256": "edc12f518bfc445dedfe8a7c58374ea659525e0b6e67814686bd6cd57f90f8b3"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+          "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+          "path": "modules.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/resolve/58edf8cada9e398793dca955574a48cbb7f18be2/modules.json",
+          "bytes": 341,
+          "sha256": "f83ea5d68ac85ec15f650b350f0dc37b03d63abd60442f518e14c06f479beee6"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+          "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+          "path": "sentence_bert_config.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/resolve/58edf8cada9e398793dca955574a48cbb7f18be2/sentence_bert_config.json",
+          "bytes": 53,
+          "sha256": "70f4448f31320443fe3557cacea5abf2dcc4915dda8c80646bec9f3bb0aa5a1f"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+          "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+          "path": "1_Pooling/config.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/resolve/58edf8cada9e398793dca955574a48cbb7f18be2/1_Pooling/config.json",
+          "bytes": 190,
+          "sha256": "a37f83ada23e7887be6b88f4998927dbeac0038af301553c7cd5461413bf1a56"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+          "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+          "path": "2_Dense/config.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/resolve/58edf8cada9e398793dca955574a48cbb7f18be2/2_Dense/config.json",
+          "bytes": 115,
+          "sha256": "48f4dfaf605a6c2869cd200970e54911c6c15053781d2bdcf3e81e89e77662ed"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+          "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+          "path": "tokenizer_config.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/resolve/58edf8cada9e398793dca955574a48cbb7f18be2/tokenizer_config.json",
+          "bytes": 371,
+          "sha256": "8f66d0ad85be46afc77e0bbf48312cff326ddb9e7290926df96a8228d69a814e"
+        }
+      ]
+    },
+    {
+      "repo": "sentence-transformers/clip-ViT-B-32",
+      "revision": "327ab6726d33c0e22f920c83f2ff9e4bd38ca37f",
+      "card_data": {
+        "library_name": "sentence-transformers",
+        "tags": [
+          "sentence-transformers",
+          "feature-extraction",
+          "sentence-similarity"
+        ],
+        "pipeline_tag": "sentence-similarity"
+      },
+      "safetensors_info": null,
+      "weights_metadata_only": [
+        {
+          "rfilename": "0_CLIPModel/model.safetensors",
+          "blobId": "a43027a48aecd6167aa3550c118cb4cac39ff68c",
+          "size": 605157884,
+          "lfs": {
+            "sha256": "99d28a652e6ec46629ab7047a0ac82c69b1fe11e0ce672c43af65d3a9a3fc05d",
+            "size": 605157884,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "0_CLIPModel/pytorch_model.bin",
+          "blobId": "c96b88f02b95ec0801f3028cec76dfd2e99bc474",
+          "size": 605266175,
+          "lfs": {
+            "sha256": "a62934cf6216e42859223aed2df08b4f1bd0042cb31be80d2db5cd54f71c0d16",
+            "size": 605266175,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "source_files": [
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32",
+          "revision": "327ab6726d33c0e22f920c83f2ff9e4bd38ca37f",
+          "path": "README.md",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32/resolve/327ab6726d33c0e22f920c83f2ff9e4bd38ca37f/README.md",
+          "bytes": 1911,
+          "sha256": "84dc32f9617815fef11181bd6dca41031b7832b7201706fcae6d1776e46a7756"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32",
+          "revision": "327ab6726d33c0e22f920c83f2ff9e4bd38ca37f",
+          "path": "modules.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32/resolve/327ab6726d33c0e22f920c83f2ff9e4bd38ca37f/modules.json",
+          "bytes": 122,
+          "sha256": "c05ee467d00d460b77a264597d9af76121e3e87300ae0777f3c8fdb9babaaa79"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32",
+          "revision": "327ab6726d33c0e22f920c83f2ff9e4bd38ca37f",
+          "path": "0_CLIPModel/config.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32/resolve/327ab6726d33c0e22f920c83f2ff9e4bd38ca37f/0_CLIPModel/config.json",
+          "bytes": 4025,
+          "sha256": "f77ab2f54a03090c5dcac397670c254c39cd7a311611cafb5a79de3b07cd13ff"
+        },
+        {
+          "repo": "sentence-transformers/clip-ViT-B-32",
+          "revision": "327ab6726d33c0e22f920c83f2ff9e4bd38ca37f",
+          "path": "0_CLIPModel/preprocessor_config.json",
+          "url": "https://huggingface.co/sentence-transformers/clip-ViT-B-32/resolve/327ab6726d33c0e22f920c83f2ff9e4bd38ca37f/0_CLIPModel/preprocessor_config.json",
+          "bytes": 316,
+          "sha256": "910e70b3956ac9879ebc90b22fb3bc8a75b6a0677814500101a4c072bd7857bd"
+        }
+      ]
+    },
+    {
+      "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+      "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+      "card_data": {
+        "pipeline_tag": "sentence-similarity",
+        "language": "tr",
+        "license": "mit",
+        "tags": [
+          "trimmed"
+        ],
+        "library_name": "sentence-transformers",
+        "base_model": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+        "base_model_relation": "quantized",
+        "datasets": [
+          "lbourdois/fineweb-2-trimming"
+        ]
+      },
+      "safetensors_info": {
+        "parameters": {
+          "F32": 55504896
+        },
+        "total": 55504896
+      },
+      "weights_metadata_only": [
+        {
+          "rfilename": "2_Dense/model.safetensors",
+          "blobId": "e0f0f633b0263f0c3ef2f094b7f1cf39c5e3810b",
+          "size": 1572984,
+          "lfs": {
+            "sha256": "d12568dc7300970a4d3dbb49068ad16cd89b99840b74b026f8e48071e9414f74",
+            "size": 1572984,
+            "pointerSize": 132
+          }
+        },
+        {
+          "rfilename": "model.safetensors",
+          "blobId": "f423619cdeb5e74e2d30eea0c670e3542c5c3cd6",
+          "size": 222030624,
+          "lfs": {
+            "sha256": "f62dd9332b6f2da5b84f4e85d35d8e04c0d54504e2ec881c141df28800dbde69",
+            "size": 222030624,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "source_files": [
+        {
+          "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+          "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+          "path": "README.md",
+          "url": "https://huggingface.co/alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384/resolve/5ea48296bd771861465fa5da69814ce6f294f45c/README.md",
+          "bytes": 3241,
+          "sha256": "2c2e035d649d7b0f1c75aefbda64a98a6f3b47c74b587a9c59adb32f068a4067"
+        },
+        {
+          "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+          "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+          "path": "config.json",
+          "url": "https://huggingface.co/alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384/resolve/5ea48296bd771861465fa5da69814ce6f294f45c/config.json",
+          "bytes": 593,
+          "sha256": "6b8bff5b6138629af0735513b42fe2ec87a4750f0b57e9b60ae2c7d703270613"
+        },
+        {
+          "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+          "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+          "path": "modules.json",
+          "url": "https://huggingface.co/alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384/resolve/5ea48296bd771861465fa5da69814ce6f294f45c/modules.json",
+          "bytes": 341,
+          "sha256": "f83ea5d68ac85ec15f650b350f0dc37b03d63abd60442f518e14c06f479beee6"
+        },
+        {
+          "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+          "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+          "path": "sentence_bert_config.json",
+          "url": "https://huggingface.co/alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384/resolve/5ea48296bd771861465fa5da69814ce6f294f45c/sentence_bert_config.json",
+          "bytes": 53,
+          "sha256": "70f4448f31320443fe3557cacea5abf2dcc4915dda8c80646bec9f3bb0aa5a1f"
+        },
+        {
+          "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+          "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+          "path": "1_Pooling/config.json",
+          "url": "https://huggingface.co/alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384/resolve/5ea48296bd771861465fa5da69814ce6f294f45c/1_Pooling/config.json",
+          "bytes": 190,
+          "sha256": "a37f83ada23e7887be6b88f4998927dbeac0038af301553c7cd5461413bf1a56"
+        },
+        {
+          "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+          "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+          "path": "2_Dense/config.json",
+          "url": "https://huggingface.co/alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384/resolve/5ea48296bd771861465fa5da69814ce6f294f45c/2_Dense/config.json",
+          "bytes": 115,
+          "sha256": "48f4dfaf605a6c2869cd200970e54911c6c15053781d2bdcf3e81e89e77662ed"
+        },
+        {
+          "repo": "alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384",
+          "revision": "5ea48296bd771861465fa5da69814ce6f294f45c",
+          "path": "tokenizer_config.json",
+          "url": "https://huggingface.co/alphaedge-ai/clip-ViT-B-32-multilingual-v1-tr-16384/resolve/5ea48296bd771861465fa5da69814ce6f294f45c/tokenizer_config.json",
+          "bytes": 413,
+          "sha256": "b52e89405448643be44b785c5f589079054ae3af1af566400a4cfecbfd613419"
+        }
+      ]
+    },
+    {
+      "repo": "Helsinki-NLP/opus-mt-tr-en",
+      "revision": "19c65427cc2af5f191337d4899e0348c4af25902",
+      "card_data": {
+        "tags": [
+          "translation"
+        ],
+        "license": "apache-2.0"
+      },
+      "safetensors_info": null,
+      "weights_metadata_only": [
+        {
+          "rfilename": "pytorch_model.bin",
+          "blobId": "ee2a3c6c0ad7ab89743be83cbab8cde02a5566f9",
+          "size": 306727185,
+          "lfs": {
+            "sha256": "e2b820f31c9348b0ae33d77ac23bd1686fa60a8afa0b9511bc7d9a35c125b534",
+            "size": 306727185,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "source_files": [
+        {
+          "repo": "Helsinki-NLP/opus-mt-tr-en",
+          "revision": "19c65427cc2af5f191337d4899e0348c4af25902",
+          "path": "README.md",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tr-en/resolve/19c65427cc2af5f191337d4899e0348c4af25902/README.md",
+          "bytes": 997,
+          "sha256": "b8e5d51c40ca2cf0e6d0621092c022093076768b27188cc28f8ee6602fc96bcc"
+        },
+        {
+          "repo": "Helsinki-NLP/opus-mt-tr-en",
+          "revision": "19c65427cc2af5f191337d4899e0348c4af25902",
+          "path": "config.json",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tr-en/resolve/19c65427cc2af5f191337d4899e0348c4af25902/config.json",
+          "bytes": 1381,
+          "sha256": "58c3d18b384cebc9383f6d85a72dae0e02cc47695097b69ff130f8be4c0e07e3"
+        },
+        {
+          "repo": "Helsinki-NLP/opus-mt-tr-en",
+          "revision": "19c65427cc2af5f191337d4899e0348c4af25902",
+          "path": "tokenizer_config.json",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tr-en/resolve/19c65427cc2af5f191337d4899e0348c4af25902/tokenizer_config.json",
+          "bytes": 42,
+          "sha256": "3483b08070a3abacc4422dc1672ba9a175a9ce7503a17d1ca999fb34664dfea7"
+        },
+        {
+          "repo": "Helsinki-NLP/opus-mt-tr-en",
+          "revision": "19c65427cc2af5f191337d4899e0348c4af25902",
+          "path": "generation_config.json",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tr-en/resolve/19c65427cc2af5f191337d4899e0348c4af25902/generation_config.json",
+          "bytes": 293,
+          "sha256": "a633dc790450cf8c19347853cb323f9ea82f91e5f59e5b4be431a2248adfef11"
+        }
+      ]
+    },
+    {
+      "repo": "Helsinki-NLP/opus-mt-tc-big-tr-en",
+      "revision": "2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391",
+      "card_data": {
+        "language": [
+          "en",
+          "tr"
+        ],
+        "tags": [
+          "translation",
+          "opus-mt-tc"
+        ],
+        "license": "cc-by-4.0",
+        "model-index": [
+          {
+            "name": "opus-mt-tc-big-tr-en",
+            "results": [
+              {
+                "task": {
+                  "name": "Translation tur-eng",
+                  "type": "translation",
+                  "args": "tur-eng"
+                },
+                "dataset": {
+                  "name": "flores101-devtest",
+                  "type": "flores_101",
+                  "args": "tur eng devtest"
+                },
+                "metrics": [
+                  {
+                    "name": "BLEU",
+                    "type": "bleu",
+                    "value": 37.6,
+                    "verified": false
+                  }
+                ]
+              },
+              {
+                "task": {
+                  "name": "Translation tur-eng",
+                  "type": "translation",
+                  "args": "tur-eng"
+                },
+                "dataset": {
+                  "name": "newsdev2016",
+                  "type": "newsdev2016",
+                  "args": "tur-eng"
+                },
+                "metrics": [
+                  {
+                    "name": "BLEU",
+                    "type": "bleu",
+                    "value": 32.1,
+                    "verified": false
+                  }
+                ]
+              },
+              {
+                "task": {
+                  "name": "Translation tur-eng",
+                  "type": "translation",
+                  "args": "tur-eng"
+                },
+                "dataset": {
+                  "name": "tatoeba-test-v2021-08-07",
+                  "type": "tatoeba_mt",
+                  "args": "tur-eng"
+                },
+                "metrics": [
+                  {
+                    "name": "BLEU",
+                    "type": "bleu",
+                    "value": 57.6,
+                    "verified": false
+                  }
+                ]
+              },
+              {
+                "task": {
+                  "name": "Translation tur-eng",
+                  "type": "translation",
+                  "args": "tur-eng"
+                },
+                "dataset": {
+                  "name": "newstest2016",
+                  "type": "wmt-2016-news",
+                  "args": "tur-eng"
+                },
+                "metrics": [
+                  {
+                    "name": "BLEU",
+                    "type": "bleu",
+                    "value": 29.3,
+                    "verified": false
+                  }
+                ]
+              },
+              {
+                "task": {
+                  "name": "Translation tur-eng",
+                  "type": "translation",
+                  "args": "tur-eng"
+                },
+                "dataset": {
+                  "name": "newstest2017",
+                  "type": "wmt-2017-news",
+                  "args": "tur-eng"
+                },
+                "metrics": [
+                  {
+                    "name": "BLEU",
+                    "type": "bleu",
+                    "value": 29.7,
+                    "verified": false
+                  }
+                ]
+              },
+              {
+                "task": {
+                  "name": "Translation tur-eng",
+                  "type": "translation",
+                  "args": "tur-eng"
+                },
+                "dataset": {
+                  "name": "newstest2018",
+                  "type": "wmt-2018-news",
+                  "args": "tur-eng"
+                },
+                "metrics": [
+                  {
+                    "name": "BLEU",
+                    "type": "bleu",
+                    "value": 30.7,
+                    "verified": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "safetensors_info": {
+        "parameters": {
+          "F16": 234843876
+        },
+        "total": 234843876
+      },
+      "weights_metadata_only": [
+        {
+          "rfilename": "model.safetensors",
+          "blobId": "1745d84c2dbf58887e04a1f2343cd62949247e80",
+          "size": 469717280,
+          "lfs": {
+            "sha256": "fbb0eb4c56cf9a6248adbda79c2bbce72cd8969b4b794fbbc434d4b7d995549d",
+            "size": 469717280,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "pytorch_model.bin",
+          "blobId": "07745f4290e6ac8bd0ff5365bb051bfff176f84b",
+          "size": 469774277,
+          "lfs": {
+            "sha256": "f7b144ac803253b7ea70e00b673f3d45c43587cb528225cff514e540e126e630",
+            "size": 469774277,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "source_files": [
+        {
+          "repo": "Helsinki-NLP/opus-mt-tc-big-tr-en",
+          "revision": "2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391",
+          "path": "README.md",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-tr-en/resolve/2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391/README.md",
+          "bytes": 7166,
+          "sha256": "9055d3b933b97a28e46d9574262ab8a49d6ed34fef2cafa6bd4fcffc2720b80d"
+        },
+        {
+          "repo": "Helsinki-NLP/opus-mt-tc-big-tr-en",
+          "revision": "2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391",
+          "path": "config.json",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-tr-en/resolve/2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391/config.json",
+          "bytes": 1076,
+          "sha256": "9e03c439d75b5166feb31a01eeedb2befdc01eb41b3541ce37dc8e61eebd9d93"
+        },
+        {
+          "repo": "Helsinki-NLP/opus-mt-tc-big-tr-en",
+          "revision": "2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391",
+          "path": "tokenizer_config.json",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-tr-en/resolve/2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391/tokenizer_config.json",
+          "bytes": 337,
+          "sha256": "923ca4a80543f39d3dde8fbb00b7af31dd7363d460e622b7a3159258f7693e4a"
+        },
+        {
+          "repo": "Helsinki-NLP/opus-mt-tc-big-tr-en",
+          "revision": "2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391",
+          "path": "generation_config.json",
+          "url": "https://huggingface.co/Helsinki-NLP/opus-mt-tc-big-tr-en/resolve/2261c8fc7b1af59caee87f8ff0ecf3fbccfe8391/generation_config.json",
+          "bytes": 301,
+          "sha256": "8cdf53889db9c60b7c62056f5a6e50825379f1d0f6e7ff00fb7916d42af09137"
+        }
+      ]
+    },
+    {
+      "repo": "google/siglip2-base-patch16-224",
+      "revision": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+      "card_data": {
+        "license": "apache-2.0",
+        "tags": [
+          "vision"
+        ],
+        "widget": [
+          {
+            "src": "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/bee.jpg",
+            "candidate_labels": "bee in the sky, bee on the flower",
+            "example_title": "Bee"
+          }
+        ],
+        "library_name": "transformers",
+        "pipeline_tag": "zero-shot-image-classification"
+      },
+      "safetensors_info": {
+        "parameters": {
+          "F32": 375187970
+        },
+        "total": 375187970
+      },
+      "weights_metadata_only": [
+        {
+          "rfilename": "model.safetensors",
+          "blobId": "aff60bf4990ccd2fc9de54afb14d8bd3580cdf8a",
+          "size": 1500800904,
+          "lfs": {
+            "sha256": "612923381c76ec5a9bed335d1c48827e3f2e506ac31b044b63b2031fadee6a0b",
+            "size": 1500800904,
+            "pointerSize": 135
+          }
+        }
+      ],
+      "source_files": [
+        {
+          "repo": "google/siglip2-base-patch16-224",
+          "revision": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+          "path": "README.md",
+          "url": "https://huggingface.co/google/siglip2-base-patch16-224/resolve/75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2/README.md",
+          "bytes": 3375,
+          "sha256": "39ac3705d62af9ffa1a14675b8ccb220a75f2d81acd530e564a3b1e3dfe418d8"
+        },
+        {
+          "repo": "google/siglip2-base-patch16-224",
+          "revision": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+          "path": "config.json",
+          "url": "https://huggingface.co/google/siglip2-base-patch16-224/resolve/75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2/config.json",
+          "bytes": 253,
+          "sha256": "fe8b5fe6d5734360678fd71c11c21e1ea3364bd8598d34295d9206335973ffd7"
+        },
+        {
+          "repo": "google/siglip2-base-patch16-224",
+          "revision": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+          "path": "preprocessor_config.json",
+          "url": "https://huggingface.co/google/siglip2-base-patch16-224/resolve/75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2/preprocessor_config.json",
+          "bytes": 394,
+          "sha256": "9b36b57ebaf20f09bf4c22100ccc21877ea6bfe5aead0c00c59f8af8ccefacfc"
+        },
+        {
+          "repo": "google/siglip2-base-patch16-224",
+          "revision": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+          "path": "tokenizer_config.json",
+          "url": "https://huggingface.co/google/siglip2-base-patch16-224/resolve/75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2/tokenizer_config.json",
+          "bytes": 47164,
+          "sha256": "14afe629fe4959b9e0d51e1852b8d9f7ad074f90a1a7125a4fcdd17f06e78fc8"
+        }
+      ]
+    }
+  ],
+  "source_file_count": 30,
+  "documentation_sources": [
+    {
+      "title": "Sentence Transformers ONNX component boundary",
+      "url": "https://www.sbert.net/docs/sentence_transformer/usage/efficiency.html",
+      "access_date": "2026-11-23"
+    },
+    {
+      "title": "ONNX Runtime mobile deployment",
+      "url": "https://onnxruntime.ai/docs/tutorials/mobile/",
+      "access_date": "2026-11-23"
+    },
+    {
+      "title": "Optimum ONNX export",
+      "url": "https://huggingface.co/docs/optimum-onnx/onnx/usage_guides/export_a_model",
+      "access_date": "2026-11-23"
+    },
+    {
+      "title": "MarianMT",
+      "url": "https://huggingface.co/docs/transformers/model_doc/marian",
+      "access_date": "2026-11-23"
+    },
+    {
+      "title": "ML Kit translation",
+      "url": "https://developers.google.com/ml-kit/language/translation",
+      "access_date": "2026-11-23"
+    },
+    {
+      "title": "OpenAI CLIP source license",
+      "url": "https://github.com/openai/CLIP/blob/main/LICENSE",
+      "access_date": "2026-11-23",
+      "observed_license": "MIT",
+      "version_pinned": false,
+      "note": "Source license observed via web; the Sentence Transformers image model card has no license tag. Specific artifact provenance/attributions must be retained before packaging."
+    }
+  ],
+  "validation_limits": [
+    "File sizes and weight digests are published metadata, not locally verified model bytes",
+    "No ONNX graph I/O inspected",
+    "No model export or inference run",
+    "Android tokenizer/operator/memory/latency compatibility remains to be validated",
+    "Parameter reduction and quantization are not a measured quality ranking"
+  ],
+  "decision": {
+    "source": "explicit_user_choice",
+    "image_model": "sentence-transformers/clip-ViT-B-32",
+    "text_model": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+    "translation": null,
+    "reason": "User selected the recommended standard multilingual CLIP pair",
+    "model_contract_task": "A04.2",
+    "evaluation_plan": "EVALUATION_PLAN.json",
+    "model_contract": "MODEL_CONTRACT.md",
+    "model_contract_rules": "MODEL_CONTRACT.json",
+    "model_contract_status": "source_contract_complete_inference_pending"
+  }
+}
