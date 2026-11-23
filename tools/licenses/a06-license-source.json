@@ -1,0 +1,6 @@
+{
+  "model_card": "https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/tree/58edf8cada9e398793dca955574a48cbb7f18be2",
+  "declared_license": "Apache-2.0",
+  "license_text_url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+  "license_text_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+}

@@ -9,3 +9,15 @@ captures/
 tmp/
 *.onnx
 *.ort
+__pycache__/
+
+# Keep model weights and generated Float32 artifacts out of source control.
+*.safetensors
+*.f32
+
+# Retain only the small, independent Android test references.
+!/app/src/androidTest/assets/a05/input.f32
+!/app/src/androidTest/assets/a05/onnx.f32
+!/app/src/androidTest/assets/a05/reference.f32
+!/app/src/androidTest/assets/a06/*-pytorch.f32
+!/app/src/androidTest/assets/a06/*-onnx.f32

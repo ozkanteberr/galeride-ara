@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "contract_version": "multilingual-clip-v1",
-  "status": "visual_desktop_android_verified_text_pending",
+  "status": "visual_and_text_numerically_verified_gallery_integration_pending",
   "selection": {
     "option": 1,
     "translation": null,
@@ -201,8 +201,9 @@
       "path": "model.safetensors",
       "bytes": 538947416,
       "published_sha256": "7b968c09938603158413ea2c91af82e82158ebb6db901a6cf97c28ce7d7ebc6d",
-      "locally_verified": false,
-      "downloaded": false
+      "locally_verified": true,
+      "downloaded": true,
+      "role": "selected_runtime_or_fp32_reference"
     },
     {
       "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
@@ -210,8 +211,9 @@
       "path": "onnx/model_qint8_arm64.onnx",
       "bytes": 135336307,
       "published_sha256": "3bed77e83926519660b5c0833cb3321cfde952331edec4f7d501c7d384b8a8a7",
-      "locally_verified": false,
-      "downloaded": false
+      "locally_verified": true,
+      "downloaded": true,
+      "role": "diagnostic_only_not_selected"
     },
     {
       "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
@@ -219,8 +221,19 @@
       "path": "2_Dense/model.safetensors",
       "bytes": 1572984,
       "published_sha256": "d12568dc7300970a4d3dbb49068ad16cd89b99840b74b026f8e48071e9414f74",
-      "locally_verified": false,
-      "downloaded": false
+      "locally_verified": true,
+      "downloaded": true,
+      "role": "selected_runtime_or_fp32_reference"
+    },
+    {
+      "repo": "sentence-transformers/clip-ViT-B-32-multilingual-v1",
+      "revision": "58edf8cada9e398793dca955574a48cbb7f18be2",
+      "path": "onnx/model_quint8_avx2.onnx",
+      "bytes": 135377779,
+      "published_sha256": "fbc8fbeaa5237d96bd1bf430057c70d34de8334a463e933a5faa305f6caeed9c",
+      "downloaded": true,
+      "locally_verified": true,
+      "role": "selected_runtime_or_fp32_reference"
     }
   ],
   "oracle": {
@@ -846,7 +859,7 @@
     "tokenizer_executed": true,
     "full_environment_resolved": false,
     "neural_inference_executed": true,
-    "executed_scope": "visual branch only; CPU PyTorch and FP32 ONNX, text neural inference pending"
+    "executed_scope": "visual and text FP32 PyTorch references; desktop and Android ONNX CPU"
   },
   "image": {
     "canonical_decoder_profile": "rgb8-exif-once-alpha-white-v1",
@@ -1014,11 +1027,19 @@
       "input_ids": "int64",
       "attention_mask": "int64"
     },
-    "fixture_file": "TOKENIZER_REFERENCE_CASES.json"
+    "fixture_file": "TOKENIZER_REFERENCE_CASES.json",
+    "android_implementation": "pure Kotlin cased WordPiece v1; user selected option 1",
+    "android_cases_verified": 24,
+    "profiles_verified": [
+      "dynamic",
+      "fixed_128"
+    ],
+    "vocab_sha256": "fe0fda7c425b48c516fc8f160d594c8022a0808447475c1a7c6d6479763f310c",
+    "android_fixture_file": "../app/src/androidTest/assets/a06/tokenizer_cases.json"
   },
   "text": {
-    "published_graph": "onnx/model_qint8_arm64.onnx",
-    "actual_graph_io_inspected": false,
+    "published_graph": "onnx/model_quint8_avx2.onnx",
+    "actual_graph_io_inspected": true,
     "expected_graph_inputs": {
       "input_ids": [
         "batch",
@@ -1053,9 +1074,51 @@
       ],
       "bias": false,
       "activation": "Identity",
-      "formula": "y[d] = sum_j(W[d,j]*p[j])"
+      "formula": "y[d] = sum_j(W[d,j]*p[j])",
+      "runtime_file": "clip_multilingual_dense.f32",
+      "runtime_dtype": "little-endian float32 row-major",
+      "runtime_sha256": "e5f6548cbcef6c62631b3946d89042ab4c8451762c7bb0a3be11eb6c480b686d",
+      "runtime_bytes": 1572864,
+      "source_sha256": "d12568dc7300970a4d3dbb49068ad16cd89b99840b74b026f8e48071e9414f74"
     },
-    "final_raw_dimensions": 512
+    "final_raw_dimensions": 512,
+    "variant_decision": "single published U8U8 INT8 artifact; user selected option 1",
+    "actual_graph_io": {
+      "inputs": [
+        {
+          "name": "input_ids",
+          "type": "tensor(int64)",
+          "shape": [
+            "batch_size",
+            "sequence_length"
+          ]
+        },
+        {
+          "name": "attention_mask",
+          "type": "tensor(int64)",
+          "shape": [
+            "batch_size",
+            "sequence_length"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "last_hidden_state",
+          "type": "tensor(float)",
+          "shape": [
+            "batch_size",
+            "sequence_length",
+            768
+          ]
+        }
+      ]
+    },
+    "quantization": "U8U8 dynamic INT8",
+    "artifact_sha256": "fbc8fbeaa5237d96bd1bf430057c70d34de8334a463e933a5faa305f6caeed9c",
+    "artifact_bytes": 135377779,
+    "validation_record": "validation/A06_TEXT_ENCODER.json",
+    "physical_arm_verified": false
   },
   "embedding": {
     "dtype": "float32",
@@ -1069,7 +1132,7 @@
   "identity": {
     "id": "clip-vit-b32-multilingual-v1",
     "dimensions": 512,
-    "revision": "SHA-256 of canonical component manifest; not yet assigned",
+    "revision": "b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d",
     "canonical_json": "UTF-8, sorted keys, compact separators",
     "required_manifest_components": [
       "actual visual ONNX SHA-256",
@@ -1079,7 +1142,10 @@
       "decoder/preprocessing profile",
       "pooling/projection/normalization profile"
     ],
-    "runtime_manifest_complete": false
+    "runtime_manifest_complete": true,
+    "manifest_file": "MODEL_RUNTIME_MANIFEST.json",
+    "application_integration_complete": false,
+    "revision_recipe": "SHA-256 of manifest without revision field; UTF-8, sorted keys, compact separators, ensure_ascii=false"
   },
   "tolerances": {
     "tokenizer": "exact ids and masks",
@@ -1122,8 +1188,16 @@
     "neural_weights_scope": "visual source checkpoint only",
     "image_validation_scope": "single controlled opaque RGB PNG; API 35 x86_64 emulator CPU",
     "uri_exif_alpha_hdr_verified": false,
-    "text_neural_inference_executed": false,
-    "visual_record": "validation/A05_VISUAL_ENCODER.json"
+    "text_neural_inference_executed": true,
+    "visual_record": "validation/A05_VISUAL_ENCODER.json",
+    "text_android_executed": true,
+    "text_cases_executed": 24,
+    "text_profiles_executed": 2,
+    "text_vector_comparisons": 48,
+    "kotlin_tokenizer_exact": true,
+    "text_record": "validation/A06_TEXT_ENCODER.json",
+    "physical_arm_verified": false,
+    "retrieval_quality_measured": false
   },
   "historical_contract": {
     "archive": "MOBILECLIP_MODEL_CONTRACT.md",

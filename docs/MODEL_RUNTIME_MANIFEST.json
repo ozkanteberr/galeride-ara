@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "id": "clip-vit-b32-multilingual-v1",
+  "dimensions": 512,
+  "components": {
+    "image_onnx": {
+      "filename": "clip_vit_b32_visual_fp32.onnx",
+      "sha256": "4bd22c1cab0e6b2a725a3d9e729c3a3c0338f5a2ecf34349cbed4c6aeaeb17bd"
+    },
+    "text_onnx": {
+      "path": "onnx/model_quint8_avx2.onnx",
+      "sha256": "fbc8fbeaa5237d96bd1bf430057c70d34de8334a463e933a5faa305f6caeed9c",
+      "output_name": "last_hidden_state",
+      "quantization": "U8U8"
+    },
+    "dense": {
+      "source_sha256": "d12568dc7300970a4d3dbb49068ad16cd89b99840b74b026f8e48071e9414f74",
+      "runtime_sha256": "e5f6548cbcef6c62631b3946d89042ab4c8451762c7bb0a3be11eb6c480b686d",
+      "shape": [
+        512,
+        768
+      ],
+      "layout": "little-endian float32 row-major",
+      "bias": false,
+      "activation": "Identity"
+    },
+    "tokenizer": {
+      "json_sha256": "5b4e1a8171c81dfd666ae40265b9530c6e0b3d53923fe8ac493dcc84229adf81",
+      "vocab_sha256": "fe0fda7c425b48c516fc8f160d594c8022a0808447475c1a7c6d6479763f310c",
+      "profile": "cased-wordpiece-kotlin-v1",
+      "max_length": 128,
+      "padding": "dynamic or right-zero-to-128",
+      "strip": "Python str.strip semantics",
+      "translation": null
+    },
+    "image_preprocessing": {
+      "canonical_decoder_profile": "rgb8-exif-once-alpha-white-v1",
+      "reference_formats": [
+        "8-bit sRGB PNG",
+        "8-bit sRGB JPEG with EXIF",
+        "RGBA PNG composited over white"
+      ],
+      "orientation": "apply EXIF orientation including mirrors exactly once",
+      "alpha_background_rgb": [
+        255,
+        255,
+        255
+      ],
+      "shortest_edge": 224,
+      "resize_long_edge": "int(224 * long / short)",
+      "interpolation": "Pillow BICUBIC (resample=3)",
+      "center_crop": [
+        224,
+        224
+      ],
+      "crop_origin": "floor((resized_dimension-224)/2)",
+      "rescale_factor": 0.00392156862745098,
+      "mean": [
+        0.48145466,
+        0.4578275,
+        0.40821073
+      ],
+      "std": [
+        0.26862954,
+        0.26130258,
+        0.27577711
+      ],
+      "layout": "NCHW RGB",
+      "dtype": "float32",
+      "input_shape": [
+        "batch",
+        3,
+        224,
+        224
+      ]
+    },
+    "text_pooling": {
+      "type": "masked_mean",
+      "include_cls_sep": true,
+      "denominator_floor": 1e-09,
+      "output_dimensions": 768
+    },
+    "embedding": {
+      "dtype": "float32",
+      "dimensions": 512,
+      "all_values_finite": true,
+      "norm_must_be_positive": true,
+      "normalization": "L2 once at application boundary; core Embedding already provides it",
+      "similarity": "cosine via normalized dot product",
+      "logit_scale_and_softmax": false
+    }
+  },
+  "revision": "b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d"
+}

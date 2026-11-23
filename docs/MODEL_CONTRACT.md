@@ -1,6 +1,6 @@
 # A04.2 - Çok dilli CLIP model sözleşmesi
 
-Sözleşme sürümü: `multilingual-clip-v1`. Durum: kaynaklar ve arayüz kuralları sabitlendi. Bu belge **A05/A06 için etkin sözleşmedir**; A05 görsel dalı masaüstünde ve API 35 emülatöründe doğrulandı. Metin çıkarımı ve galeri entegrasyonu bekliyor; [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) kapsamı ve sınırları açıklar.
+Sözleşme sürümü: `multilingual-clip-v1`. Durum: kaynaklar ve arayüz kuralları sabitlendi. Bu belge **A05/A06 için etkin sözleşmedir**; A05 görsel dalı masaüstünde ve API 35 emülatöründe doğrulandı. A06 metin zinciri de API 35 x86_64 üzerinde doğrulandı. Galeri entegrasyonu bekliyor; [A06 kontrol kaydı](validation/A06_TEXT_ENCODER.md) ile [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) kapsamı ve sınırları açıklar.
 
 Makine tarafından okunabilir kurallar ve kaynak özetleri [MODEL_CONTRACT.json](MODEL_CONTRACT.json), gerçek tokenizer örnekleri [TOKENIZER_REFERENCE_CASES.json](TOKENIZER_REFERENCE_CASES.json) dosyasındadır. Önceki adayın incelemesi [MobileCLIP arşivinde](MOBILECLIP_MODEL_CONTRACT.md) korunur.
 
@@ -24,9 +24,10 @@ Kaynak revision'ları ve dosya adları birlikte sabittir. Her dosyanın yayımla
 | Görsel depo: `0_CLIPModel/model.safetensors` | Görsel modelin kaynak ağırlık paketi | İndirildi; 605157884 bayt ve SHA-256 doğrulandı |
 | Görsel depo: `0_CLIPModel/config.json` | Model ve 768 -> 512 görsel projeksiyon yapılandırması | Yerel dosya özeti doğrulandı |
 | Görsel depo: `0_CLIPModel/preprocessor_config.json` | 224 piksel ve CLIP normalizasyon ayarları | Yerel dosya özeti doğrulandı |
-| Metin depo: `model.safetensors` | FP32 DistilBERT referans gövdesi | Sunucu özeti/boyutu kayıtlı; ağırlık indirilmedi |
-| Metin depo: `onnx/model_qint8_arm64.onnx` | Yayımlanan INT8 metin gövdesi adayı | Sunucu özeti/boyutu kayıtlı; dosya ve gerçek grafiği okunmadı |
-| Metin depo: `2_Dense/model.safetensors` | Zorunlu metin projeksiyon ağırlığı | Sunucu özeti/boyutu kayıtlı; ağırlık indirilmedi |
+| Metin depo: `model.safetensors` | FP32 DistilBERT referans gövdesi | İndirildi; sabit SHA-256 ile doğrulandı ve çalıştırıldı |
+| Metin depo: `onnx/model_quint8_avx2.onnx` | Seçilen tek U8U8 INT8 metin gövdesi | İndirildi; SHA-256, gerçek I/O ve masaüstü/Android sayısal uyum doğrulandı |
+| Metin depo: `onnx/model_qint8_arm64.onnx` | Önceki U8S8 adayının teşhis kaydı | İndirildi; mevcut x86 ortamında toleransı geçmedi; etkin çalışma dosyası değil, ARM sonucu değildir |
+| Metin depo: `2_Dense/model.safetensors` | Zorunlu metin projeksiyon ağırlığı | Kaynak ve Float32 çalışma dosyası ayrı SHA-256 ile doğrulandı |
 | Metin depo: `tokenizer.json`, `vocab.txt`, özel token/config dosyaları | Gerçek cased WordPiece tanımı | İndirildi; sözlük ve özetler karşılaştırıldı |
 | Metin depo: `modules.json`, pooling/Dense config | Metin zincirinin modül sırası | Yerel dosya özetleri doğrulandı |
 
@@ -38,9 +39,9 @@ A05'te `clip_vit_b32_visual_fp32.onnx` üretildi: 351610456 bayt, SHA-256 `4bd22
 
 Referans kod: Sentence Transformers `5.1.2` ve Transformers `4.57.1` kaynakları. Çekirdek Python oracle sürümleri: PyTorch `2.9.1`, Tokenizers `0.22.1`, Pillow `12.0.0`, NumPy `2.4.0`, ONNX `1.19.1`, ONNX Runtime `1.23.2`.
 
-Bu sürümlerle A05 görsel referansı çalıştırıldı. Sabit CLIP yapılandırması ve görsel/projeksiyon ağırlıkları Transformers CLIPVisionModelWithProjection ile doğrudan yüklendi; processor, PyTorch ve ONNX Runtime CPU çıktıları karşılaştırıldı. [Çalıştırma araçları](../tools/README.md) ve doğrulama JSON'u gerçek ortamı kaydeder. Doğrudan paket sürümleri sabittir; bütün transitif bağımlılıkların platformlar arası kilidi oluşturulmadı. Metin modeli henüz çalıştırılmadı.
+Bu sürümlerle A05 görsel referansı çalıştırıldı. Sabit CLIP yapılandırması ve görsel/projeksiyon ağırlıkları Transformers CLIPVisionModelWithProjection ile doğrudan yüklendi; processor, PyTorch ve ONNX Runtime CPU çıktıları karşılaştırıldı. [Çalıştırma araçları](../tools/README.md) ve doğrulama JSON'u gerçek ortamı kaydeder. Doğrudan paket sürümleri sabittir; bütün transitif bağımlılıkların platformlar arası kilidi oluşturulmadı. A06 FP32 DistilBertModel referansı strict ağırlık yüklemeyle çalıştırıldı; maskeli ortalama ve Dense dahil U8U8 çıktısıyla karşılaştırıldı.
 
-Oracle CPU ve FP32 ile `eval()`/çıkarım modunda çalışacak. Rastgele başlatılmış model veya dropout açık çıktı karşılaştırma referansı sayılmaz. Hızlandırıcı ve nicemleme farkları aynı testmiş gibi karıştırılmaz.
+Oracle CPU ve FP32 ile `eval()`/çıkarım modunda çalıştırıldı. Rastgele başlatılmış model veya dropout açık çıktı karşılaştırma referansı sayılmaz. Hızlandırıcı ve nicemleme farkları aynı testmiş gibi karıştırılmaz.
 
 ## 4. Görselin kanonik hazırlanması
 
@@ -115,7 +116,7 @@ Pooling formülü: `p[j] = sum_t(h[t,j] * mask[t]) / max(sum_t(mask[t]), 1e-9)`.
 
 Dense formülü: `y[d] = sum_j(W[d,j] * p[j])`; `W` saklama şekli `[512,768]`. Boyutları ters okumak veya ek tanh/bias uygulamak hatadır. Bu ağırlık aynı sabit metin deposundaki `2_Dense` varlığından alınacak.
 
-Yayımlanan INT8 dosyası henüz açılmadığından gerçek input/output adları doğrulanmış değildir. Beklenen rol adları `input_ids`, `attention_mask`, `last_hidden_state`; A06 oturum metadata'sını kontrol edip rol eşlemesini kaydedecek. İlk output'u denetimsiz seçmek, token temsillerini son cümle vektörü saymak veya 768 boyutu 512'ye kesmek kabul edilmez.
+Seçilen U8U8 dosyasında gerçek I/O doğrulandı: Int64 `input_ids`, `attention_mask` `[batch_size,sequence_length]`; Float32 `last_hidden_state` `[batch_size,sequence_length,768]`. Kotlin oturumu adları, türleri ve rank/boyutları denetler. İlk output'u denetimsiz seçmek, token temsillerini son cümle vektörü saymak veya 768 boyutu 512'ye kesmek kabul edilmez.
 
 INT8 gövde Float32 token temsilleri vermelidir; çıktı türü dosyadan doğrulanacak. Nicemleme sadece aynı metin modelinin uygulama varyantıdır; farklı model veya farklı Dense ile birleştirme izni değildir.
 
@@ -127,11 +128,11 @@ Arama skoru normalize vektörlerin nokta çarpımıdır. CLIP `logit_scale`, sof
 
 `ModelIdentity.id` önerilen sabit aile adı: `clip-vit-b32-multilingual-v1`; `dimensions = 512`. Nihai `revision`, canonical JSON bileşen manifestinin SHA-256 değeri olacak. Canonical JSON: UTF-8, anahtarlar sıralı, gereksiz boşluk yok; manifest gerçek görsel ONNX, metin ONNX, Dense ve tokenizer özetlerini, ön işleme/pooling/normalizasyon profilini içerir. Hesaplanan revision kendi hash girdisine eklenmez.
 
-Görsel ONNX özeti artık kayıtlıdır; metin ONNX ve Dense doğrulanmadan nihai runtime revision oluşturulmaz. Bu belgenin sürümü veya kaynak commit'i onun yerine yazılmaz. A05 prototip çıktısı, model çiftinin bütün varlıkları doğrulanmadan kalıcı galeri indeksi olarak sunulmaz. Model veya profil değiştiğinde eski ve yeni vektörler karıştırılmaz.
+Görsel, seçilen metin ONNX, Dense, tokenizer ve işlem profilleri [runtime manifestinde](MODEL_RUNTIME_MANIFEST.json) sabitlendi. `revision`, bu JSON'un revision alanı çıkarılıp UTF-8/sıralı anahtar/kompakt biçimde yazılan içeriğinin SHA-256 değeridir. Bu belgenin sürümü veya kaynak commit'i revision yerine kullanılmaz; manifest bileşenleri değişince özet yeniden hesaplanır. A05 prototip çıktısı, model çiftinin bütün varlıkları doğrulanmadan kalıcı galeri indeksi olarak sunulmaz. Model veya profil değiştiğinde eski ve yeni vektörler karıştırılmaz.
 
 ## 9. Sayısal kabul kuralları
 
-Aşağıdaki eşikler bu entegrasyon için önceden belirlenen mühendislik kabul bütçeleridir; bu görevde ölçülüp geçilmiş model sonuçları değildir. Tüm vektör karşılaştırmalarında önce boyut, sonlu değerler ve pozitif norm doğrulanır.
+Aşağıdaki eşikler model ölçümünden önce sabitlendi. A05 görsel ve A06 metin kontrolleri kendi kayıtlı kapsamlarında geçti; bu sonuç fiziksel ARM cihazı, bütün decoder profilleri veya retrieval kalitesinin doğrulandığı anlamına gelmez. Tüm vektör karşılaştırmalarında önce boyut, sonlu değerler ve pozitif norm doğrulanır.
 
 | Kontrol | Kabul kuralı |
 |---|---|
@@ -152,17 +153,17 @@ Eşik aşılırsa hangi aşamanın fark ürettiği araştırılır; sessizce dah
 
 14 gerçek tokenizer örneği: boş/boşluk metni, Türkçe sorgu/sahne, büyük-küçük harf, Türkçe harfler, birleşen Unicode, noktalama, tab/yeni satır, 100 karakteri aşan kelime, 128 token'a kesilen uzun sorgu, literal özel token ve kontrol karakteri.
 
-`tokenizer.json` ve `vocab.txt` kimlik eşlemesi bütünüyle karşılaştırıldı. Tokenizers `0.22.1` ile gerçek token dizileri üretildi; hem dinamik hem sabit 128 padding/maskeleri kontrol edildi. Bunlar ileride Kotlin tokenizer uygulamasının birebir karşılaştırılacağı referans değerleridir; Kotlin tokenizer testi henüz yapılmadı.
+`tokenizer.json` ve `vocab.txt` kimlik eşlemesi bütünüyle karşılaştırıldı. Tokenizers `0.22.1` ile gerçek token dizileri üretildi; hem dinamik hem sabit 128 padding/maskeleri kontrol edildi. A06 saf Kotlin tokenizer bu 14 örneğe ek 10 sınır örneğinde, dinamik ve sabit 128 profillerinde birebir karşılaştırıldı: toplam 48 token/mask kontrolü geçti. Android Unicode kategorileri kullanıldığından API 35 dışındaki sürümler ve bütün Unicode aralığı bu testle doğrulanmış sayılmaz.
 
 Siyah, beyaz, kırmızı ve gri RGB örneklerinde mean/std aritmetiği ayrıca kontrol edildi. Bu aritmetik kontrolü bütün Transformers image processor'ının veya modelin çalıştırılması değildir.
 
 ## 11. Kalan işler ve kapsam
 
 - **A05 tamamlandı:** Kaynak ağırlık ve görsel ONNX özeti/I/O doğrulandı; tek opak RGB PNG için Python–masaüstü ONNX–Android karşılaştırması geçti. URI/EXIF/RGBA/HDR ve fiziksel cihaz doğrulaması tamamlanmış sayılmaz.
-- **A06:** Metin gövdesi ve Dense varlıklarını doğrula; Kotlin token kimliklerini fixture'larla karşılaştır; pooling/projeksiyon ve son vektörü FP32/INT8 referansıyla doğrula.
-- **A07 ve sonrası:** Türkçe sorgu akışını mevcut arayüze bağla; model manifesti tamamlandıktan sonra kalıcı indeksleme ve aramayı etkinleştir.
+- **A06 tamamlandı:** Saf Kotlin tokenizer ve tek U8U8 dosyası kullanıcı tarafından seçildi. 24 örneğin iki profili için token/maskeler tam eşleşti; pooling, Dense ve normalizasyon dahil 48 Android vektör karşılaştırması geçti.
+- **A07 ve sonrası:** Doğrudan Türkçe sorgu akışını QueryEncoder arayüzüne bağla; kalıcı indeksleme ve aramayı ilgili sonraki görevlerde etkinleştir.
 
-A04.2 kaynak sözleşmesi aşamasında uygulama kodu veya model çıkarımı yoktu. A05 ile görsel ön işleme ve ONNX çalıştırıcısı ile bağımsız referans testi eklendi; ONNX Runtime Android bağımlılığı tanımlandı. Galeri, Room ve arama bağlantısı sonraki görevlerde kalır. Ham görsel çıktı 512 boyutludur; uygulama sınırındaki ortak L2 kuralı korunur.
+A04.2 kaynak sözleşmesi aşamasında uygulama kodu veya model çıkarımı yoktu. A05 ile görsel ön işleme ve ONNX çalıştırıcısı ile bağımsız referans testi eklendi; ONNX Runtime Android bağımlılığı tanımlandı. A06 ile saf Kotlin tokenizer ve ham metin çalıştırıcısı eklendi. Galeri, Room ve arama bağlantısı sonraki görevlerde kalır. Ham görsel ve metin çıktıları 512 boyutludur; uygulama sınırındaki ortak L2 kuralı korunur.
 
 ## Kaynaklar ve lisans kaydı
 
@@ -171,4 +172,12 @@ A04.2 kaynak sözleşmesi aşamasında uygulama kodu veya model çıkarımı yok
 3. [Sentence Transformers CLIPModel](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/CLIPModel.py), [Transformer](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/Transformer.py), [Pooling](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/Pooling.py), [Dense](https://github.com/huggingface/sentence-transformers/blob/v5.1.2/sentence_transformers/models/Dense.py).
 4. [Transformers CLIP image processor](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/clip/image_processing_clip.py), [image transforms](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/image_transforms.py), [CLIP model](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/clip/modeling_clip.py).
 
-Metin model kartı Apache-2.0 bildirir. Eşleşen görsel kartında ayrı lisans etiketi bulunmadığından kaynak kökeni ve OpenAI CLIP MIT lisans kaydı birlikte izlenir; metin lisansı bütün zincirin lisansı sayılmaz. İndirilen/dağıtılacak somut varlıkların bildirimleri A05/A06'da korunacaktır. Önceki Apple model lisansı yeni modelin lisansı olarak kullanılmaz.
+Metin model kartı Apache-2.0 bildirir. Eşleşen görsel kartında ayrı lisans etiketi bulunmadığından kaynak kökeni ve OpenAI CLIP MIT lisans kaydı birlikte izlenir; metin lisansı bütün zincirin lisansı sayılmaz. Kaynak bağlantıları ve CLIP/MIT ile metin/Apache-2.0 bildirimleri [araçların lisans dizininde](../tools/licenses) korunur. Dağıtım biçimi henüz uygulanmadı. Önceki Apple model lisansı yeni modelin lisansı olarak kullanılmaz.
+
+## A06 varyant kararı ve ölçüm sonucu
+
+Kullanıcı üçer alternatiften saf Kotlin WordPiece ve tek yayımlanmış U8U8 INT8 dosyasını seçti. Etkin metin dosyası `onnx/model_quint8_avx2.onnx`, 135377779 bayt; SHA-256 `fbc8fbeaa5237d96bd1bf430057c70d34de8334a463e933a5faa305f6caeed9c`. Dosya adındaki avx2, yayımlayıcının nicemleme profili adıdır; fiziksel ARM uyumu/performansı bu görevde ölçülmedi. İkinci bir işlemciye göre model seçme yolu eklenmedi.
+
+Önceki `model_qint8_arm64.onnx` mevcut x86 ortamında 48 karşılaştırmanın hiçbirinde FP32 toleransını geçmedi. İlk tamsayı katmanındaki 5376 sonuçtan 900'ü tam Int32 hesapla farklıdır. Bu, ONNX Runtime'ın belgelediği x86 U8S8 doyma sorunuyla tutarlıdır; modelin ARM üzerinde hatalı olduğunu göstermez. U8U8 aynı bütçelerle yeniden sınandı; eşikler gevşetilmedi. [Teşhis kaydı](validation/A06_INT8_X86_DIAGNOSTIC.json) ve [tekrar üretim aracı](../tools/a06_quantization_diagnostic.py) korunur.
+
+Runtime bileşen revision'ı `b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d`. Bu kimlik hazır olsa da uygulamada QueryEncoder/ImageEncoder bağlantısı ve kalıcı indeks henüz yoktur. Test içindeki `a06-numerical-validation` kimliği yalnız L2 doğrulaması içindir; üretim model kimliği olarak kullanılmaz.

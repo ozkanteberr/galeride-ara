@@ -19,8 +19,8 @@ Her görev tek amaç taşır. Markdown dosyalarına yeni tarih eklenmez. Görevd
 | A04.1 (tamamlandı) | Değerlendirme planını belgele | [Protokol](EVALUATION_PLAN.md) ve [ayarlar](EVALUATION_PLAN.json): 200 fotoğraf, 40 pozitif + 5 negatif sorgu, veri seti adayları, relevance, kalite/cihaz ölçümleri; deneyler henüz yapılmadı |
 | A04.2 (tamamlandı) | Seçilen çok dilli CLIP model sözleşmesini uyarla | [Etkin sözleşme](MODEL_CONTRACT.md), [kaynak/kurallar](MODEL_CONTRACT.json) ve [14 tokenizer referansı](TOKENIZER_REFERENCE_CASES.json) hazır; görsel processor, pooling/Dense, hedef I/O ve toleranslar sabit; model çıkarımı henüz yapılmadı |
 | A05 (tamamlandı) | Tek görselin ONNX vektörünü üret | Görsel + projeksiyon FP32 ONNX üretildi; SHA-256/I/O ve Python–masaüstü–API 35 Android karşılaştırması geçti; [kontrol kaydı](validation/A05_VISUAL_ENCODER.md) |
-| A06 | Tek sorgunun metin vektörünü üret | Eşleşen tokenizer ve model, sabit metin için karşılaştırma geçiyor |
-| A07 | Seçilen Türkçe sorgu işleme akışını bağla | A04 kararına göre doğrudan kodlama veya çevirili akış; sabit Türkçe sorgularda davranış kayıtlı |
+| A06 (tamamlandı) | Tek sorgunun metin vektörünü üret | Saf Kotlin tokenizer + seçilen U8U8 model + pooling/Dense; 24 örnek × 2 profil, Python–Android karşılaştırması ve L2 kontrolü geçti; [kayıt](validation/A06_TEXT_ENCODER.md) |
+| A07 | Doğrudan Türkçe sorgu akışını QueryEncoder adaptörüne bağla | Sabit manifest kimliği, tokenizer ve metin modeliyle çevirisiz kodlama; boş sorgu, iptal ve hata davranışı doğrulanmış |
 | A08 | Vektörün Room'a yazılıp okunmasını ekle | Float32 round-trip ve model sürümü ayrımı testli |
 | A09 | Tek fotoğrafı kalıcı indeksle | Vektör ve metadata tutarlı kaydediliyor |
 | A10 | Artımlı iş listesini ekle | Değişmeyen fotoğraf atlanıyor, değişen tekrar işleniyor |
@@ -91,3 +91,11 @@ Gerçek model entegrasyonu sırasında çıkan belirsizlikler yeni küçük gör
 - 5 çekirdek testi ve 1 Android instrumentation testi geçti; debug/test APK üretildi; lint 0 hata, 12 uyarı. Uyarıların 3'ü eklenen bağımlılıklar için sürüm önerisidir; başlangıçtaki 9 uyarı korunur.
 - Çalıştırıcı ve Bitmap ön işleme yardımcısı eklendi. Model Git'e veya APK'ya gömülmedi. Galeri URI/EXIF/RGBA/HDR adaptörü, metin dalı, kalıcı indeks, arama ve gerçek cihaz performansı tamamlanmış sayılmaz.
 - Sıradaki atomik görev A06: tek sorgunun uyumlu 512 boyutlu metin vektörünü tokenizer/pooling/Dense dahil doğrulamak. Commit veya push oluşturulmadı.
+
+## A06 tek sorgu doğrulama sonucu
+
+- Kullanıcı üç alternatif arasından saf Kotlin WordPiece'i seçti. Türkçe casing ve aksanlar korunur; çeviri veya ek Unicode normalizasyonu eklenmez. Önceki 14 örnek ve 10 sınır örneği iki padding profiliyle tam token/mask eşleşmesini geçti.
+- İlk U8S8/ARM64 adayı mevcut x86 ortamında kabul eşiğini aşan fark üretti. Tamsayı katmanı teşhisi ve bütün başarısız karşılaştırmalar kaydedildi; ARM cihazı hakkında sonuç çıkarılmadı. Kullanıcı üç varyant seçeneğinden tek yayımlanmış U8U8 INT8 dosyasını seçti; model ailesi değişmedi.
+- Seçilen metin gövdesi, maskeli ortalama ve 768 -> 512 Dense zinciri çalıştı. 48 Android/masaüstü vektörü birebir aynı; FP32 referansa en düşük cosine 0.993826400315, en yüksek göreli L2 0.11148372; sabit 0.99/0.15 bütçeleri geçti. Normalize norm hatası en çok 3.44253572e-08.
+- Debug ve test APK üretildi; 5 çekirdek testi ile 2 A06 Android testi geçti; lint 0 hata, 12 uyarı. Yeni native bağımlılık eklenmedi. Kod, [runtime manifesti](MODEL_RUNTIME_MANIFEST.json), kaynak özetleri, bağımsız fixture'lar ve [doğrulama kaydı](validation/A06_TEXT_ENCODER.md) hazır.
+- Model ve Dense ağırlıkları Git'e/APK'ya eklenmedi. Fiziksel ARM, retrieval başarımı, URI/EXIF/decoder ve galeri/Room/Worker bağlantısı tamamlanmış sayılmaz. Sıradaki atomik görev A07: seçilen doğrudan Türkçe sorgu akışını QueryEncoder adaptörüne bağlamak; arama ekranını etkinleştirme A13'te kalır. Commit veya push yapılmadı.

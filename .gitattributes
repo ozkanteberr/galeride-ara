@@ -1,0 +1,2 @@
+# Preserve exact Float32 bytes; disable text conversion, diff and merge.
+*.f32 binary

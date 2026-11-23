@@ -1,0 +1,16 @@
+Multilingual CLIP text model provenance
+Repository: sentence-transformers/clip-ViT-B-32-multilingual-v1
+Pinned revision: 58edf8cada9e398793dca955574a48cbb7f18be2
+Source model card and files: https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/tree/58edf8cada9e398793dca955574a48cbb7f18be2
+Model card license declaration: Apache-2.0.
+Selected body: onnx/model_quint8_avx2.onnx
+Dense source: 2_Dense/model.safetensors
+Tokenizer definition: tokenizer.json and vocab.txt
+The adjacent APACHE-2.0.txt preserves the Apache license text.
+This notice does not assign the text model license to the visual model.
+
+Pure Kotlin tokenizer behavior references:
+https://github.com/huggingface/tokenizers/blob/v0.22.1/tokenizers/src/normalizers/bert.rs
+https://github.com/huggingface/tokenizers/blob/v0.22.1/tokenizers/src/pre_tokenizers/bert.rs
+https://github.com/huggingface/tokenizers/blob/v0.22.1/tokenizers/src/models/wordpiece/mod.rs
+No source-model weights are embedded in the project APK or Git repository.

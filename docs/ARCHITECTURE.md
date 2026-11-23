@@ -43,7 +43,7 @@ Sabit sürümler, kaynaklar, beklenen ONNX I/O tanımları ve doğrulama sınır
 
 ## A04 model seçimi ve değerlendirme protokolü
 
-Kullanıcı üç alternatif arasından standart çok dilli CLIP çiftini seçti. Ayrı çeviri modeli kullanılmayacak. Metin tarafında tokenizer -> DistilBERT -> masked mean pooling -> 768/512 Dense -> normalizasyon; görsel tarafında eşleşen CLIP processor ve projeksiyon korunacak. Metin zinciri seçilen entegrasyon kapsamıdır; görsel dalın A05 prototipi aşağıdaki sınırlarla doğrulandı.
+Kullanıcı üç alternatif arasından standart çok dilli CLIP çiftini seçti. Ayrı çeviri modeli kullanılmayacak. Metin tarafında tokenizer -> DistilBERT -> masked mean pooling -> 768/512 Dense -> normalizasyon; görsel tarafında eşleşen CLIP processor ve projeksiyon korunacak. Görsel A05 ve metin A06 prototipleri aşağıdaki sınırlarla doğrulandı; galeri/arama bağlantısı henüz uygulanmadı.
 
 Görsel ön işleme, token kimlikleri, hedef I/O ve sayısal toleranslar [etkin model sözleşmesinde](MODEL_CONTRACT.md) sabitlendi. A05/A06 gerçek model dosyaları ve Android çıktılarıyla bu kuralları doğrulamadan tamamlanmaz. Mevcut arama algoritması veya Room şeması bu seçim kaydıyla değiştirilmedi. Geliştirme/test ayrımı, veri seti gerekçeleri ve ölçümler [EVALUATION_PLAN.md](EVALUATION_PLAN.md) dosyasında tanımlıdır.
 
@@ -119,3 +119,11 @@ Literatürdeki alternatifler, veri seti adayları ve deney planı geliştirme bo
 `data/encoding/ClipImagePreprocessor`, yönü önceden düzeltilmiş Bitmap'i RGB/BICUBIC/merkez kırpma/CLIP normalizasyonu ile Float32 NCHW girdiye dönüştürür. `ClipVisualModel`, doğrulanan SHA-256 ve I/O ile dosyadan ONNX oturumu açar; CPU üzerinde ham 512 boyutlu vektör döndürür, tensör/sonuç/oturum kaynaklarını kapatır. Çağıran taraf arka plan dispatcher'ını seçmelidir. Ortak L2 normalizasyonu `core/Embedding` sınırında kalır.
 
 Bu yardımcılar galeri `ImageEncoder` URI adaptörüne, ViewModel'e, Room'a veya Worker'a bağlanmadı. APK model içermez. Bütün model çiftinin runtime manifesti metin varlıkları doğrulanınca tamamlanabilir. [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) tek kontrollü PNG ve API 35 x86_64 CPU doğrulamasını gösterir; fiziksel ARM cihazı, EXIF/decoder ve galeri başarımı çıkarımı yapılmaz.
+
+## A06 metin prototipi ve seçilen varyant
+
+Kullanıcı saf Kotlin WordPiece ve tek U8U8 INT8 dosyasını seçti. `CasedWordPieceTokenizer`, sabit sözlük ve cased BERT kurallarıyla tek sorguyu Int64 token/mask dizilerine dönüştürür. `ClipTextModel`, SHA-256 ve gerçek I/O kontrolüyle açılan oturumdan 768 boyutlu token durumlarını alır; padding dışındaki CLS/SEP dahil maskeli ortalama ve doğrulanan Dense ağırlığıyla ham 512 vektör üretir. Oturum/tensör/sonuç kaynakları sahipleri tarafından kapatılır; arka plan dispatcher'ını çağıran seçer. Ortak L2 `core/Embedding` sınırında kalır.
+
+Etkin dosya `model_quint8_avx2.onnx` U8U8'dir. Önceki ARM64 adlı U8S8 dosyası mevcut x86 CPU'da kabul bütçesini geçmedi; teşhis ARM cihazı ölçümü değildir. U8U8 dosyası masaüstü ve API 35 x86_64 Android üzerinde doğrulandı. Fiziksel ARM uyumu/performansı ve Türkçe retrieval başarımı ayrıca ölçülmelidir; cihaz türüne göre ikinci bir model seçme yolu eklenmedi.
+
+[Runtime manifesti](MODEL_RUNTIME_MANIFEST.json) gerçek görsel/metin/Dense/tokenizer özetleri ve işlem profillerinden ortak revision üretir. Manifestin hazır olması kodlayıcıların uygulamaya bağlandığı anlamına gelmez. Prototip henüz `QueryEncoder` uygulaması değildir; ViewModel, Room ve Worker çağırmaz. Model dağıtımı ve URI/decoder doğrulaması sonraki ilgili görevlerde kalır. [A06 kaydı](validation/A06_TEXT_ENCODER.md) ve [çalıştırma araçları](../tools/README.md) ölçüm sınırlarını açıklar.
