@@ -60,7 +60,8 @@ flowchart TD
     QE --> CQ[ClipQueryEncoder]
     CQ --> TM[Doğrulanan tokenizer ve metin oturumu]
     SEARCH --> VR[VectorRepository arayüzü]
-    VR -. Room adaptörü eklenecek .-> DB
+    VR --> RVR[RoomVectorRepository]
+    RVR --> DB
     WORK[İndeksleme Worker - planlanan] -.-> IE[ImageEncoder arayüzü]
     WORK -.-> DB
 ```
@@ -137,3 +138,13 @@ Kullanıcının son seçimi adaptör başına tek ONNX oturumudur. `ClipQueryEnc
 Dosya yükleme/özet doğrulama IO, tokenizer/model/L2 işlemleri Default dispatcher'dadır. Manifest kimliği `MultilingualClipProfile` içinde sabittir; bileşen değişikliği ortak manifest ve profil güncellemesi gerektirir. Normalizasyon `core/Embedding` ile yapılır. Girdi Türkçe casing'ini korur; çeviri ve ek normalizasyon katmanı yoktur. Hata ve CancellationException yutulmaz; açılış sırasında iptal edilirse oluşturulan native kaynak kapatılır.
 
 İptal kooperatiftir: kuyruk çağrısı iptal edilebilir; tokenizasyon öncesi/sonrası ve native çıktı sonrası iptal denetlenir. Devam eden native çağrı zorla kesilmez; iptal edilmiş sonuç teslim edilmez ve kaynak çağrı sürerken kapatılmaz. [A07 kaydı](validation/A07_QUERY_ENCODER.md), gerçek QueryEncoder çıktısı ile kontrollü eşzamanlılık/hata testlerini açıklar. Bu adım SearchPhotos/Room/Worker veya arama ekranı kurulumu değildir; A08 kalıcı vektör adaptörüne geçer.
+
+## A08 kalıcı vektör adaptörü
+
+`EmbeddingDao` var olan embeddings tablosuna suspend upsert ve tam model id/revision filtresi ekler. `RoomVectorRepository` mevcut VectorRepository okuma arayüzünü uygular; yazma için `save(photoUri, embedding)` sağlar. Fotoğraf önceden katalogda bulunmalıdır; FK yetim vektörü reddeder. Adaptör veritabanının sahibi değildir, ortak Room örneğini kapatmaz. Fotoğraf kodlama, Worker ve ekran kurulumu bu sınıfın sorumluluğu değildir.
+
+Kayıt Float32 LE, başlıksız ve normalize biçimdedir. Blob tam `dimensions*4` bayt olmalıdır. Okumada `Embedding.fromNormalized` değerleri doğrulayıp kopyalar; ikinci normalizasyonun Float32 bitlerini değiştirmesi önlenir. Ham çıktı constructor'ı önceki tek L2 davranışını korur. Model/ön işleme revision'ı değişmedi. Mevcut tablo, kolon, birleşik anahtar ve FK aynı olduğundan Room sürümü/migration değiştirilmedi.
+
+Kullanıcının seçimi, bozuk byte/norm/boyut kaydında bütün okumayı VectorIntegrityException ile durdurup kaydı korumaktır. Yalnız istenen id/revision seçilir; boyut uyuşmazlığı görünmez bir filtreyle gizlenmez. Yazma transaction'ı, aynı model id/revision altında fotoğraflar arası boyut karışmasını denetler ve sonra upsert yapar. Fotoğraf silme cascade'i ve mevcut invalidate işlemi bütün bağlı revision'ları temizlemeye devam eder.
+
+Serileştirme/çözme Default dispatcher'dadır; suspend DAO ve Room transaction işlemleri Room yürütücülerini kullanır. Okuma mevcut VectorRepository sözleşmesi gereği seçilen modelin tüm satırlarını belleğe alır; büyük galeri sayfalama ve performans ölçümü bu görevde eklenmedi. [A08 kaydı](validation/A08_ROOM_VECTORS.md) gerçek SQLite disk kalıcılığı, veri bütünlüğü, paralel yazma ve A07 regresyonunu gösterir.

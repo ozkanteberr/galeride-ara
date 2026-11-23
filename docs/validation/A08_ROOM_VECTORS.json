@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "task": "A08",
+  "status": "passed",
+  "invalid_record_decision": "user option 1: stop the full selected-model read, keep all records",
+  "android_room": {
+    "status": "passed",
+    "api": 35,
+    "abi": "x86_64",
+    "dimensions": 512,
+    "bytes": 2048,
+    "disk_reopen_cycles": 3,
+    "bitwise_round_trip": true,
+    "byte_order": "little-endian",
+    "model_revision": "b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d",
+    "controlled_blob_sha256": "b10e78e25e8bbc32d5f96591d2411980bf7cff7918ae37b088ca6f4d54145d64",
+    "normalization": "validate and copy; no second normalization",
+    "scope": "controlled SQLite vectors; not image indexing or retrieval quality",
+    "passed_tests": 12
+  },
+  "room_test_names": [
+    "loadOrderIsStableAndEmptyModelsHaveNoResults",
+    "differentRevisionsAndModelFamiliesCoexistAndLoadSeparately",
+    "missingPhotoAndBlankUriFailWithoutOrphansAndDatabaseRemainsUsable",
+    "codecPreservesLittleEndianBytesSignedZeroAndDefensiveCopies",
+    "malformedBlobStopsEntireReadAndLeavesAllRowsUntouched",
+    "upsertChangesOnlyItsOwnPhotoAndModelKey",
+    "nonFiniteZeroAndNonNormalizedStoredValuesAreRejectedWithoutRepair",
+    "oneModelRevisionCannotChangeDimensionsAcrossDifferentPhotos",
+    "concurrentWritersCannotMixDimensionsWithinOneRevision",
+    "dimensionMismatchIsNotSilentlyFilteredOrOverwritten",
+    "normalizedFloat32BitsSurviveDiskCloseReopenAndRepeatedRestoration",
+    "invalidationAndPhotoDeletionRemoveAllLinkedRevisionsOnly"
+  ],
+  "a07_real_query_regression": {
+    "status": "passed",
+    "api": 35,
+    "abi": "x86_64",
+    "model_revision": "b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d",
+    "queries": 22,
+    "results": [
+      {
+        "id": "turkish_query",
+        "cosine_vs_fp32": 0.9998099504309659,
+        "normalized_relative_l2": 0.019495297631361114,
+        "norm_error": 1.1629366913901151e-08
+      },
+      {
+        "id": "scene",
+        "cosine_vs_fp32": 0.9981697557450641,
+        "normalized_relative_l2": 0.06050190792511898,
+        "norm_error": 8.973078058360784e-09
+      },
+      {
+        "id": "uppercase",
+        "cosine_vs_fp32": 0.9996301549598964,
+        "normalized_relative_l2": 0.027196819107233015,
+        "norm_error": 2.873207005649192e-09
+      },
+      {
+        "id": "case_pair",
+        "cosine_vs_fp32": 0.9938264230239696,
+        "normalized_relative_l2": 0.11111794611540164,
+        "norm_error": 2.5030278960613828e-08
+      },
+      {
+        "id": "turkish_letters",
+        "cosine_vs_fp32": 0.9995613721991098,
+        "normalized_relative_l2": 0.029618021815030395,
+        "norm_error": 3.02774672000794e-09
+      },
+      {
+        "id": "unicode_combining",
+        "cosine_vs_fp32": 0.9999280895162236,
+        "normalized_relative_l2": 0.011994398434506504,
+        "norm_error": 4.7068726694021734e-09
+      },
+      {
+        "id": "punctuation",
+        "cosine_vs_fp32": 0.9997351229472673,
+        "normalized_relative_l2": 0.02301474894463389,
+        "norm_error": 1.2149772854463947e-08
+      },
+      {
+        "id": "whitespace_variants",
+        "cosine_vs_fp32": 0.9998099504309659,
+        "normalized_relative_l2": 0.019495297631361114,
+        "norm_error": 1.1629366913901151e-08
+      },
+      {
+        "id": "unknown_long_word",
+        "cosine_vs_fp32": 0.9999280895162236,
+        "normalized_relative_l2": 0.011994398434506504,
+        "norm_error": 4.7068726694021734e-09
+      },
+      {
+        "id": "truncated_query",
+        "cosine_vs_fp32": 0.995612549572373,
+        "normalized_relative_l2": 0.09367444239882425,
+        "norm_error": 1.0839026676201513e-08
+      },
+      {
+        "id": "literal_special",
+        "cosine_vs_fp32": 0.9989696464893149,
+        "normalized_relative_l2": 0.04539418013890727,
+        "norm_error": 1.725988130196754e-08
+      },
+      {
+        "id": "control_character",
+        "cosine_vs_fp32": 0.9992825524063695,
+        "normalized_relative_l2": 0.03788077530538517,
+        "norm_error": 2.5153128468957675e-09
+      },
+      {
+        "id": "embedded_specials",
+        "cosine_vs_fp32": 0.9989567855509743,
+        "normalized_relative_l2": 0.04567707311221963,
+        "norm_error": 7.248045497121325e-10
+      },
+      {
+        "id": "cleaned_special_is_ordinary",
+        "cosine_vs_fp32": 0.9995739701872721,
+        "normalized_relative_l2": 0.029191747007682487,
+        "norm_error": 3.442535723152673e-08
+      },
+      {
+        "id": "unicode_spaces",
+        "cosine_vs_fp32": 0.9992426452985249,
+        "normalized_relative_l2": 0.038918586801780224,
+        "norm_error": 1.1588022874597925e-08
+      },
+      {
+        "id": "python_strip_controls",
+        "cosine_vs_fp32": 0.9996421853881838,
+        "normalized_relative_l2": 0.026751997324173514,
+        "norm_error": 1.2341756505662715e-08
+      },
+      {
+        "id": "private_unassigned",
+        "cosine_vs_fp32": 0.9999280895162236,
+        "normalized_relative_l2": 0.011994398434506504,
+        "norm_error": 4.7068726694021734e-09
+      },
+      {
+        "id": "astral_chinese",
+        "cosine_vs_fp32": 0.9994897275805144,
+        "normalized_relative_l2": 0.03194655292796937,
+        "norm_error": 3.262333270193096e-08
+      },
+      {
+        "id": "emoji_zwj",
+        "cosine_vs_fp32": 0.999548670502085,
+        "normalized_relative_l2": 0.030044121692120066,
+        "norm_error": 9.308208204217294e-09
+      },
+      {
+        "id": "word_length_boundary",
+        "cosine_vs_fp32": 0.9997964287689985,
+        "normalized_relative_l2": 0.020176089499884385,
+        "norm_error": 2.4494298700439288e-08
+      },
+      {
+        "id": "case_and_accent",
+        "cosine_vs_fp32": 0.9991106331092953,
+        "normalized_relative_l2": 0.042174644112492776,
+        "norm_error": 1.884066880286639e-08
+      },
+      {
+        "id": "removed_controls",
+        "cosine_vs_fp32": 0.9996421853881838,
+        "normalized_relative_l2": 0.026751997324173514,
+        "norm_error": 1.2341756505662715e-08
+      }
+    ],
+    "min_cosine_vs_fp32": 0.9938264230239696,
+    "max_normalized_relative_l2": 0.11111794611540164,
+    "max_norm_error": 3.442535723152673e-08,
+    "scope": "real QueryEncoder API; fixed queries, no gallery or physical ARM validation",
+    "passed_tests": 1
+  },
+  "build": {
+    "core": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "new_core_tests": 4,
+    "room_android_tests": 12,
+    "query_regression_android_tests": 1,
+    "total_android_tests": 13,
+    "lint_errors": 0,
+    "lint_warnings": 12
+  },
+  "database": {
+    "version": 1,
+    "identity_hash": "a119765104aef865a7368184c9ba26f2",
+    "schema_unchanged": true,
+    "migration_required": false,
+    "production_database_cleared": false,
+    "test_databases": "in-memory and uniquely named a08-test UUID database"
+  },
+  "storage": {
+    "implementation": "RoomVectorRepository",
+    "dao": "EmbeddingDao",
+    "storage_format": "normalized-f32-le-v1",
+    "bytes_per_value": 4,
+    "byte_order": "little-endian",
+    "layout": "contiguous Float32 without header",
+    "restore": "Embedding.fromNormalized validates norm <=1e-5 error and copies without renormalization",
+    "key": [
+      "photoUri",
+      "modelId",
+      "revision"
+    ],
+    "dimensions_metadata_required": true,
+    "write_dimension_consistency": "transactional check across one model id/revision before upsert",
+    "load": "exact modelId/revision SQL filter; dimensions and bytes validated; sorted photoUri",
+    "invalid_record_policy": "user option 1: fail entire selected-model read and preserve all records",
+    "database_version": 1,
+    "schema_identity_hash": "a119765104aef865a7368184c9ba26f2",
+    "migration_required": false,
+    "validation_record": "validation/A08_ROOM_VECTORS.json"
+  },
+  "runtime_revision_changed": false,
+  "scope": "controlled persistence and isolation; no automatic image indexing, UI wiring or retrieval measurement"
+}

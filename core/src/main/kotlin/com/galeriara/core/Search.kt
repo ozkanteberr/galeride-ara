@@ -10,13 +10,26 @@ data class ModelIdentity(val id: String, val revision: String, val dimensions: I
 }
 
 /** Immutable, validated and normalized vector; both encoders must share the same identity. */
-class Embedding(val model: ModelIdentity, values: FloatArray) {
+class Embedding private constructor(
+    val model: ModelIdentity,
+    values: FloatArray,
+    alreadyNormalized: Boolean,
+) {
+    constructor(model: ModelIdentity, values: FloatArray) : this(model, values, false)
     private val normalized: FloatArray
     init {
         require(values.size == model.dimensions && values.all { it.isFinite() })
         val norm = sqrt(values.sumOf { it.toDouble() * it.toDouble() })
         require(norm > 0.0) { "Zero vectors cannot represent an image or query" }
-        normalized = FloatArray(values.size) { (values[it] / norm).toFloat() }
+        normalized = if (alreadyNormalized) {
+            require(kotlin.math.abs(norm - 1.0) <= 1e-5) { "Stored embedding is not normalized" }
+            values.copyOf()
+        } else FloatArray(values.size) { (values[it] / norm).toFloat() }
+    }
+    companion object {
+        /** Restore validated persisted values without a second normalization or changed Float32 bits. */
+        fun fromNormalized(model: ModelIdentity, values: FloatArray): Embedding =
+            Embedding(model, values, true)
     }
     fun values(): FloatArray = normalized.copyOf()
     fun similarity(other: Embedding): Float {

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "contract_version": "multilingual-clip-v1",
-  "status": "query_encoder_verified_persistent_index_pending",
+  "status": "room_vectors_verified_single_photo_indexing_pending",
   "selection": {
     "option": 1,
     "translation": null,
@@ -1202,7 +1202,12 @@
     "query_encoder_executed": true,
     "query_encoder_queries": 22,
     "query_encoder_lifecycle_tests": 11,
-    "a06_regression_passed": true
+    "a06_regression_passed": true,
+    "room_vector_round_trip": true,
+    "room_tests_executed": 12,
+    "core_tests_executed": 9,
+    "query_encoder_regression_queries": 22,
+    "database_schema_changed": false
   },
   "historical_contract": {
     "archive": "MOBILECLIP_MODEL_CONTRACT.md",
@@ -1222,5 +1227,27 @@
     "close": "blocking and idempotent; invoke off main; waits for current call",
     "cancellation": "cooperative checks; cancelled result discarded; active native call is not forcibly terminated",
     "validation_record": "validation/A07_QUERY_ENCODER.json"
+  },
+  "vector_storage": {
+    "implementation": "RoomVectorRepository",
+    "dao": "EmbeddingDao",
+    "storage_format": "normalized-f32-le-v1",
+    "bytes_per_value": 4,
+    "byte_order": "little-endian",
+    "layout": "contiguous Float32 without header",
+    "restore": "Embedding.fromNormalized validates norm <=1e-5 error and copies without renormalization",
+    "key": [
+      "photoUri",
+      "modelId",
+      "revision"
+    ],
+    "dimensions_metadata_required": true,
+    "write_dimension_consistency": "transactional check across one model id/revision before upsert",
+    "load": "exact modelId/revision SQL filter; dimensions and bytes validated; sorted photoUri",
+    "invalid_record_policy": "user option 1: fail entire selected-model read and preserve all records",
+    "database_version": 1,
+    "schema_identity_hash": "a119765104aef865a7368184c9ba26f2",
+    "migration_required": false,
+    "validation_record": "validation/A08_ROOM_VECTORS.json"
   }
 }

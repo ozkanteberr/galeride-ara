@@ -21,7 +21,7 @@ Her görev tek amaç taşır. Markdown dosyalarına yeni tarih eklenmez. Görevd
 | A05 (tamamlandı) | Tek görselin ONNX vektörünü üret | Görsel + projeksiyon FP32 ONNX üretildi; SHA-256/I/O ve Python–masaüstü–API 35 Android karşılaştırması geçti; [kontrol kaydı](validation/A05_VISUAL_ENCODER.md) |
 | A06 (tamamlandı) | Tek sorgunun metin vektörünü üret | Saf Kotlin tokenizer + seçilen U8U8 model + pooling/Dense; 24 örnek × 2 profil, Python–Android karşılaştırması ve L2 kontrolü geçti; [kayıt](validation/A06_TEXT_ENCODER.md) |
 | A07 (tamamlandı) | Doğrudan Türkçe sorgu akışını QueryEncoder adaptörüne bağla | Adaptör başına oturum, sabit kimlik ve L2; 22 gerçek sorgu, boş sorgu/hata/iptal/kapatma kontrolleri; 11 yeni + 2 regresyon Android testi geçti; [kayıt](validation/A07_QUERY_ENCODER.md) |
-| A08 | Vektörün Room'a yazılıp okunmasını ekle | Float32 round-trip ve model sürümü ayrımı testli |
+| A08 (tamamlandı) | Vektörün Room'a yazılıp okunmasını ekle | Little-endian Float32 bitleri 3 disk açılışında aynı; model/revision/boyut ayrımı, bozuk kayıt ve FK kontrolleri; 9 çekirdek + 12 Room testi ve A07 regresyonu geçti; [kayıt](validation/A08_ROOM_VECTORS.md) |
 | A09 | Tek fotoğrafı kalıcı indeksle | Vektör ve metadata tutarlı kaydediliyor |
 | A10 | Artımlı iş listesini ekle | Değişmeyen fotoğraf atlanıyor, değişen tekrar işleniyor |
 | A11 | İndeksleme işini WorkManager'a taşı | Tek benzersiz iş ve iptal/yeniden başlama davranışı doğrulanmış |
@@ -107,3 +107,11 @@ Gerçek model entegrasyonu sırasında çıkan belirsizlikler yeni küçük gör
 - Gerçek adaptörde 22 sorgu bağımsız referansla geçti. Boş/temizlenmiş boş girdiler inference'a ulaşmaz; iptal edilen kuyruk çağrısı çalışmaz, başlamış native çağrının iptal edilmiş sonucu teslim edilmez. Açılış iptalinde kaynak sızıntısı, hata sonrası kullanım ve güvenli/idempotent kapatma kontrollü oturumlarla sınandı.
 - Debug/test APK üretildi; 5 çekirdek testi ve 13 Android testi (11 A07 + 2 A06 regresyon) başarılı. Lint 0 hata, 12 uyarı. Native çağrıya anında son verme, fiziksel ARM ve retrieval başarımı bu sonucun parçası değildir.
 - [Doğrulama kaydı](validation/A07_QUERY_ENCODER.md) ve tekrar üretim aracı hazır; yeni model ağırlığı veya .f32 fixture eklenmedi. Sıradaki atomik görev A08: vektörü Room'a yazıp okumak; arama ekranının etkinleştirilmesi A13'te kalır. Commit veya push yapılmadı.
+
+## A08 Room vektör saklama sonucu
+
+- Kullanıcı üç alternatiften bozuk kayıtta okumayı veri bütünlüğü hatasıyla durdurmayı seçti. Kayıtlar korunur; kısmi sonuç veya otomatik onarım yoktur.
+- EmbeddingDao, RoomVectorRepository ve Float32VectorCodec eklendi. Mevcut `embeddings` tablosu kullanılır; sürüm 1 ve `a119765104aef865a7368184c9ba26f2` şema kimliği değişmedi. Migration, uygulama verisi temizleme veya yeni native bağımlılık gerekmedi.
+- `Embedding.fromNormalized`, kayıtlı normalize değerleri yeniden normalize etmeden doğrular/kopyalar. 512 Float32/2048 bayt, signed zero ve subnormal dahil disk üç kez kapatılıp açılınca bit düzeyinde aynı kaldı. Aynı model/revision için boyut değişimi yazma transaction'ında engellenir; model ailesi/revision ayrı yüklenir.
+- 9 çekirdek testi (4 yeni), 12 Room Android testi ve 22 sorguluk tek A07 gerçek model regresyon testi geçti. Toplam 13 Android testi başarılı; debug/test APK ve lint tamamlandı: 0 hata, 12 uyarı. [Doğrulama kaydı](validation/A08_ROOM_VECTORS.md) ve model gerektirmeyen tekrar üretim aracı hazır.
+- Mevcut uygulama galerisinde otomatik indeksleme başlatılmadı; A08 testleri kontrollü bellek/test veritabanlarını kullandı. Sıradaki atomik görev A09: tek fotoğrafı kodlayıp metadata ve embedding'i tutarlı biçimde kalıcı indekslemek. Commit veya push yapılmadı.

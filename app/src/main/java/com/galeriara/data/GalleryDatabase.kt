@@ -35,7 +35,20 @@ interface PhotoDao {
     @Query("DELETE FROM embeddings WHERE photoUri = :uri") suspend fun invalidate(uri: String)
 }
 
+@Dao
+interface EmbeddingDao {
+    @Upsert suspend fun upsert(embedding: EmbeddingEntity)
+
+    @Query("SELECT * FROM embeddings WHERE modelId = :modelId AND revision = :revision ORDER BY photoUri")
+    suspend fun forModel(modelId: String, revision: String): List<EmbeddingEntity>
+
+    @Query("SELECT photoUri FROM embeddings WHERE modelId = :modelId AND revision = :revision " +
+        "AND dimensions != :dimensions ORDER BY photoUri LIMIT 1")
+    suspend fun dimensionMismatch(modelId: String, revision: String, dimensions: Int): String?
+}
+
 @Database(entities = [PhotoEntity::class, EmbeddingEntity::class], version = 1, exportSchema = true)
 abstract class GalleryDatabase : RoomDatabase() {
     abstract fun photos(): PhotoDao
+    abstract fun embeddings(): EmbeddingDao
 }

@@ -162,6 +162,7 @@ Siyah, beyaz, kırmızı ve gri RGB örneklerinde mean/std aritmetiği ayrıca k
 - **A05 tamamlandı:** Kaynak ağırlık ve görsel ONNX özeti/I/O doğrulandı; tek opak RGB PNG için Python–masaüstü ONNX–Android karşılaştırması geçti. URI/EXIF/RGBA/HDR ve fiziksel cihaz doğrulaması tamamlanmış sayılmaz.
 - **A06 tamamlandı:** Saf Kotlin tokenizer ve tek U8U8 dosyası kullanıcı tarafından seçildi. 24 örneğin iki profili için token/maskeler tam eşleşti; pooling, Dense ve normalizasyon dahil 48 Android vektör karşılaştırması geçti.
 - **A07 tamamlandı:** Sabit manifest profiliyle QueryEncoder adaptörü, arka plan çalışması, boş/temizlenmiş boş sorgu reddi, hata/iptal ve kaynak sahipliği doğrulandı. Kalıcı indeksleme ve arama sonraki görevlerde kalır.
+- **A08 tamamlandı:** Normalize Float32 vektörlerin Room round-trip ve model sürümü ayrımı doğrulandı. Okumada ikinci normalizasyon yapılmaz; bozuk kayıt bütün okumayı hata ile durdurur ve korunur.
 
 A04.2 kaynak sözleşmesi aşamasında uygulama kodu veya model çıkarımı yoktu. A05 ile görsel ön işleme ve ONNX çalıştırıcısı ile bağımsız referans testi eklendi; ONNX Runtime Android bağımlılığı tanımlandı. A06 ile saf Kotlin tokenizer ve ham metin çalıştırıcısı eklendi. Galeri, Room ve arama bağlantısı sonraki görevlerde kalır. Ham görsel ve metin çıktıları 512 boyutludur; uygulama sınırındaki ortak L2 kuralı korunur.
 
@@ -189,3 +190,11 @@ Kullanıcının son seçimi adaptör başına tek oturumdur. `ClipQueryEncoder.o
 Boş veya tokenizer temizliğinden sonra içeriksiz kalan sorgu modele verilmez. Kuyruk Mutex ile iptal edilebilir; başlamış native çağrı bitene kadar çalışabilir, iptal edilmiş sonuç döndürülmez. Hatalar ve CancellationException çağırana aynen iletilir; açılış sırasında iptal olursa oluşturulmuş oturum kapatılır. `close()` idempotent ve bloklayıcıdır; sahibi ana iş parçacığı dışında çağırmalıdır, sürmekte olan hesaba eşzamanlı kaynak kapatılmaz.
 
 11 yeni adaptör testi ve 2 A06 regresyon testi geçti. Gerçek QueryEncoder API'sinde 22 sorgu, aynı ONNX referansının normalize değerleriyle `1e-6` mutlak tolerans içinde eşleşti; FP32 referansa en düşük cosine 0.993826423024, en yüksek normalize göreli L2 0.111117946; norm hatası en çok 3.44253572e-08. [A07 kontrol kaydı](validation/A07_QUERY_ENCODER.md) gerçek native karşılaştırmasını kontrollü yaşam döngüsü testlerinden ayırır. Application genelinde singleton, model dağıtımı, galeri/Room/Worker veya ekran bağlantısı bu adımda eklenmedi.
+
+## A08 vektör saklama sözleşmesi
+
+Room `embeddings.vector` alanı `normalized-f32-le-v1` biçimindedir: başlıksız, ardışık little-endian IEEE-754 Float32; 512 boyut 2048 bayttır. Boyut metadata'da ayrıca tutulur. `Embedding.fromNormalized` boyut, sonlu değer, pozitif norm ve `abs(norm-1) <= 1e-5` denetiminden sonra savunmalı kopya alır; yeniden normalizasyon yapmaz. Ham model çıktısının mevcut constructor ile bir kez normalize edilmesi değişmedi. Saklama biçimi sayısal model bileşenlerini değiştirmediğinden runtime revision değişmedi.
+
+`RoomVectorRepository.save` mevcut fotoğraf kaydı için yazar. Aynı model id/revision altında boyut uyuşmazlığı transaction içinde denetlenir; `(photoUri, modelId, revision)` anahtarı upsert edilir. `load` yalnız istenen id/revision'ı SQL ile seçer; boyut ve BLOB doğrulamasından sonra aynı model kimliğiyle IndexedPhoto döndürür. Başka revision/aile satırları bu okumaya dahil değildir.
+
+Kullanıcının seçimi bozuk kayıtta bütün okumayı açık VectorIntegrityException ile durdurmak ve kayıtları korumaktır. Kayıt atlama, silme, karantina veya otomatik onarım yapılmaz. Tablo/kolon/anahtar/FK değişmedi; Room sürüm 1 ve şema kimliği korunur, migration gerekmez. Fotoğraf indeksleme ve ekran bağlantısı bu saklama adaptöründen ayrı sonraki görevlerdir. [A08 kanıtı](validation/A08_ROOM_VECTORS.md) bit düzeyi disk round-trip ve model ayrımı kontrollerini açıklar.

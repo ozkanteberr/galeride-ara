@@ -92,3 +92,26 @@ python tools/a07_android_check.py --serial emulator-5554 --model tmp/a06/source/
 ```
 
 Gerekirse `--adb <adb.exe yolu>` ve A06'daki gibi `--remote-dir /storage/<kart-kimliği>/Android/data/com.galeriara/files/a06` ekleyin. Cihazda aynı SHA-256 ile hazır olan dosyalar yeniden gönderilmez. İki APK argümanı birlikte atlanabilir. Araç manifest revision'ını ve yerel modellerin özetini kontrol eder; yalnız A07 ile A06 test sınıflarını çalıştırır. 13 testin ve rapor kimliğinin doğrulanması gerekir; instrumentation çıktısı da kaydedilir. Bu araç model indirmez, galeri indeksi veya arama ekranını etkinleştirmez.
+
+## A08 — Room vektör saklama
+
+`RoomVectorRepository(db)` var olan VectorRepository okuma arayüzünü uygular ve `save(photoUri, embedding)` sağlar. Fotoğraf satırı önceden bulunmalıdır. Model id/revision SQL ile ayrılır; aynı model/revision altında farklı boyut yazılması transaction'da reddedilir. Kodlama/çözme Default dispatcher'da, suspend veritabanı çağrıları Room yürütücülerinde çalışır. Veritabanının sahibi çağırandır; repository DB'yi kapatmaz.
+
+`Float32VectorCodec` normalize Float32 değerleri little-endian olarak saklar. Okumada `Embedding.fromNormalized` doğrulayıp kopyalar, tekrar normalizasyon yapmaz. Bozuk kayıt bütün okumayı VectorIntegrityException ile durdurur ve veriyi korur. Yeni indeksleme veya arama ekranı çağrısı eklenmedi. Schema version 1 değişmedi; migration yoktur.
+
+Model dosyası gerektirmeyen A08 testlerini JDK 17 ve doğru cihaz seri numarasıyla çalıştırın:
+
+```powershell
+./gradlew.bat :core:test "-PcoreBuildDir=$env:TEMP/galeriara-core-build" :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug
+python tools/a08_android_check.py --serial emulator-5554 --app-apk app/build/outputs/apk/debug/app-debug.apk --test-apk app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --output tmp/a08/android_report.json
+```
+
+Gerekirse `--adb <adb.exe yolu>` ekleyin; iki APK argümanı birlikte atlanabilir. Araç 12 Room testinin ve bit eşitliği raporunun başarısını denetler, instrumentation çıktısını da kaydeder. Testler gerçek gallery.db'yi kullanmaz; yalnız in-memory ve kendilerine ait UUID adlı test veritabanlarını açıp temizler. Yeni bağımlılık veya fixture gerekmez.
+
+Çekirdek ham Embedding constructor'ının gerçek sorgu çıktısı için hedefli A07 regresyonu da çalıştırıldı. Tekrar etmek için A06 model/Dense cihazda hazırken aşağıdaki hedefi kullanın; modelPath/densePath değerlerini kendi dosya konumunuza uyarlayın:
+
+```powershell
+adb -s emulator-5554 shell am instrument -w -r -e modelPath /storage/<kart-kimliği>/Android/data/com.galeriara/files/a06/model_quint8_avx2.onnx -e densePath /storage/<kart-kimliği>/Android/data/com.galeriara/files/a06/clip_multilingual_dense.f32 -e class 'com.galeriara.data.encoding.ClipQueryEncoderInstrumentedTest#realAdapterNormalizesTurkishQueriesAgainstIndependentReferences' com.galeriara.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+Bu komut tek A07 testinde 22 sorguyu karşılaştırır; A08'in model gerektirmeyen 12 testine dahil değildir. A07 testlerinin tamamını tekrar etmek isterseniz önceki bölümün runner'ını kullanın. [A08 doğrulama kaydı](../docs/validation/A08_ROOM_VECTORS.md) kapsamı ve ölçüm sınırlarını açıklar.
