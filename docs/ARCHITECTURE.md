@@ -35,6 +35,12 @@ Model indirmeden veya ana entegrasyonu yazmadan önce:
 
 ML Kit görsel analizini arama anında çalıştırmayacağız. PDF'deki ML Kit ifadesinin kapsamına ilişkin belirsizliği artırmamak için başlangıç planı ML Kit çevirisine de bağımlı değildir. Model dağıtımına karar verilene kadar "ilk kurulum dahil tamamen çevrimdışı" iddiası yapılmaz. Mevcut uygulama INTERNET izni istemez.
 
+## A03 model referansı kararı — 23 Kasım 2026
+
+Kullanıcıya OpenCLIP referansı, PicQuery uygulamasını birebir izleme ve iki akışı ayrı deneyle karşılaştırma seçenekleri sunuldu. Kullanıcı **OpenCLIP referans akışını** seçti. Mevcut MobileCLIP2-S0 + eşleşen metin kodlayıcısı adayı korunur; girdiler sabit dışa aktarma deposunun Python/OpenCLIP referansına göre hazırlanacaktır. PicQuery'nin küçük görseller için dolgu ve tüm BPE birleştirmelerini okuma davranışları birebir taşınmayacaktır.
+
+Sabit sürümler, kaynaklar, beklenen ONNX I/O tanımları ve doğrulama sınırları [model sözleşmesinde](MODEL_CONTRACT.md), SHA-256 kayıtları [kaynak manifestinde](MODEL_REFERENCES.json) bulunur. Bu karar model entegrasyonunu tamamlamaz; gerçek ONNX dosya özetleri ve Android sayısal uyumu A05/A06 sırasında doğrulanacaktır. Türkçe çeviri seçimi A04 kapsamında kalır.
+
 ## Bileşenler
 
 ```mermaid

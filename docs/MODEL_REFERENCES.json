@@ -1,0 +1,445 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-11-23",
+  "contract_version": "a03-openclip-reference-v1",
+  "user_decision": {
+    "selected": "openclip_reference",
+    "alternatives": [
+      "openclip_reference",
+      "picquery_application",
+      "comparison_experiment"
+    ],
+    "approved_date": "2026-11-23"
+  },
+  "source_files": [
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "README.md",
+      "bytes": 3203,
+      "sha256": "a498b02bdcc048b7860bace36636f2db39d54ad219827c6b5def1b19fccf8507",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/README.md"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "LICENSE",
+      "bytes": 1061,
+      "sha256": "c315c7f22a6664bfd3ba13ef7b74611ac859429efaa63a2b015dc5a61c83aafb",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/LICENSE"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "ci/prepare_models.sh",
+      "bytes": 2505,
+      "sha256": "c6f2f7c0c0010d450d15318d366fee6c528fb53adf910af6adb21b874b8f293f",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/ci/prepare_models.sh"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "lib/src/engine/clip_tokenizer.dart",
+      "bytes": 5907,
+      "sha256": "633c6d0e87f30e2f8692d55cdd79aea70a719479d9dd629a5da3295ff4629080",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/clip_tokenizer.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "lib/src/engine/image_preprocess.dart",
+      "bytes": 7048,
+      "sha256": "a95b22c1042d71caa1dba92a788dd6363a154d4b84c70b854f7285eed2613abf",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/image_preprocess.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "lib/src/engine/image_format_utils.dart",
+      "bytes": 2448,
+      "sha256": "0642f05ffae2d0ab69686cef9960ebb651379b0a2c2cb366a569c0069af4b0d1",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/image_format_utils.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "lib/src/engine/ort_engine.dart",
+      "bytes": 14560,
+      "sha256": "c3177424b85231ea8729d5c0fa0b00e7a5734d0f8e7985a51e886f12cf877cda",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/ort_engine.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "lib/src/engine/models.dart",
+      "bytes": 4334,
+      "sha256": "281bcbf8090b75197e16e4d7d717bc4aa484160709600d4dbfd38f61aea53587",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/models.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "lib/src/engine/indexer.dart",
+      "bytes": 24242,
+      "sha256": "ab527cc8417b43e9e74a221db1afca03e617551cbd054aafa8efb1cd6d8931b5",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/engine/indexer.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "lib/src/managers/search_manager.dart",
+      "bytes": 3373,
+      "sha256": "cbdc2fed51462587893a0ad6d53ee80593efe2d42c6fd20eb6fe0d3fb6505ccb",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/lib/src/managers/search_manager.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "test/clip_tokenizer_test.dart",
+      "bytes": 4550,
+      "sha256": "c88b24c3e98d20de6e0776d5bc60be885ebe7701c460387ce694b116e63647fc",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/test/clip_tokenizer_test.dart"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "assets/models/clip-vocab.json",
+      "bytes": 1197317,
+      "sha256": "7aeb221a2a93047170070379743b49204c13d6993d9947323cd94b75c1f657ba",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/assets/models/clip-vocab.json"
+    },
+    {
+      "repo": "greyovo/PicQuery",
+      "commit": "ba83267b06d48b11fc991d9d37a5dd186fa1c477",
+      "path": "assets/models/clip-merges.txt",
+      "bytes": 3194958,
+      "sha256": "7e0847f6fced8bd28a736dcaeab20e64ac19010771700197ba479a0a8e517d4f",
+      "url": "https://raw.githubusercontent.com/greyovo/PicQuery/ba83267b06d48b11fc991d9d37a5dd186fa1c477/assets/models/clip-merges.txt"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "README.md",
+      "bytes": 5147,
+      "sha256": "734a47a928175c37c9dc021c0a50d5faa3e8e1dec05883a21c361315f2536207",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/README.md"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "export.sh",
+      "bytes": 198,
+      "sha256": "1f5316680280b7f0e1705cbc02a24f07379e3bd4dae1d320cec51c83f02b8e9f",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/export.sh"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "pyproject.toml",
+      "bytes": 686,
+      "sha256": "b197319e4f7289abbd2b7d60f97ab6299b7b07aa19cfc161c20dbf5a7cf114c4",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/pyproject.toml"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "uv.lock",
+      "bytes": 247251,
+      "sha256": "ee7baa02c40672bdcf3db30c432dba7561f1adb3bdee7addfe9891223b48f324",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/uv.lock"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/export_mobileclip_models.py",
+      "bytes": 6736,
+      "sha256": "f7cfc0c35ac4600b76e82e92881b6cfd4ec6dac5f6f1e969f62d13371280f5ab",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/export_mobileclip_models.py"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/LICENSE",
+      "bytes": 1540,
+      "sha256": "e7b09f708a137b12d14656d05dce036353b426f53eebd215106738a00a0a9357",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/LICENSE"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/LICENSE_MODELS",
+      "bytes": 5816,
+      "sha256": "30c59d255d2b4075ba11b81ce5aa0109c28d28138d66d52f7f5d8cbba814df8b",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/LICENSE_MODELS"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/LICENSE_DATA",
+      "bytes": 19126,
+      "sha256": "f7f28b8c7a1af76b9874ca6d040e8b1eb6768fd1043106c9d315090ea96754e7",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/LICENSE_DATA"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/third_party/open_clip/src/open_clip/tokenizer.py",
+      "bytes": 22680,
+      "sha256": "90d743e462d051f4c921e652e0aa8af06c40ee7ac38dfdc7bb5ede6381024734",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/tokenizer.py"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "test/test_mobileclip.py",
+      "bytes": 4243,
+      "sha256": "4226b3da20a9f58fc83d3e2e00c4025c056e387b6687ea26360e7d4b9df44ee2",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/test/test_mobileclip.py"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "test/conftest.py",
+      "bytes": 3764,
+      "sha256": "c8a46acba71de9104a9a8547493bc47a4fb6505a0d950c554d9e3e064010fa7a",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/test/conftest.py"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/mobileclip2/model_configs/MobileCLIP2-S0.json",
+      "bytes": 477,
+      "sha256": "a44413ef9ba8793313fb444686b1ca07d165f6273bd1758ffa801c47950847a5",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/mobileclip2/model_configs/MobileCLIP2-S0.json"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/third_party/open_clip/src/open_clip/bpe_simple_vocab_16e6.txt.gz",
+      "bytes": 1356917,
+      "sha256": "924691ac288e54409236115652ad4aa250f48203de50a9e4722a6ecd48d6804a",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/bpe_simple_vocab_16e6.txt.gz"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/third_party/open_clip/src/open_clip/model_configs/MobileCLIP2-S0.json",
+      "bytes": 477,
+      "sha256": "a44413ef9ba8793313fb444686b1ca07d165f6273bd1758ffa801c47950847a5",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/model_configs/MobileCLIP2-S0.json"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/third_party/open_clip/src/open_clip/pretrained.py",
+      "bytes": 33395,
+      "sha256": "5ffc377bb61392ca07581b7fa3705ed358d99188082f9a260854b2044ec3bc45",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/pretrained.py"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/third_party/open_clip/src/open_clip/transform.py",
+      "bytes": 15665,
+      "sha256": "4defa60b9ce0002962f7dd5c437a4ae6903a065181628b9950b9b3c7e97cbe23",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/src/open_clip/transform.py"
+    },
+    {
+      "repo": "apple/ml-mobileclip",
+      "commit": "48faa0fea4b08d74188b3841771aca6ff2c92852",
+      "path": "mobileclip2/model_configs/MobileCLIP2-S0.json",
+      "bytes": 477,
+      "sha256": "a44413ef9ba8793313fb444686b1ca07d165f6273bd1758ffa801c47950847a5",
+      "url": "https://raw.githubusercontent.com/apple/ml-mobileclip/48faa0fea4b08d74188b3841771aca6ff2c92852/mobileclip2/model_configs/MobileCLIP2-S0.json"
+    },
+    {
+      "repo": "apple/ml-mobileclip",
+      "commit": "48faa0fea4b08d74188b3841771aca6ff2c92852",
+      "path": "LICENSE_MODELS",
+      "bytes": 5816,
+      "sha256": "30c59d255d2b4075ba11b81ce5aa0109c28d28138d66d52f7f5d8cbba814df8b",
+      "url": "https://raw.githubusercontent.com/apple/ml-mobileclip/48faa0fea4b08d74188b3841771aca6ff2c92852/LICENSE_MODELS"
+    },
+    {
+      "repo": "greyovo/picquery-models",
+      "commit": "4efa0ea182641611aeff68d3a06ff4e8ddf6503a",
+      "path": "models/ml-mobileclip/third_party/open_clip/LICENSE",
+      "bytes": 1229,
+      "sha256": "4a5b4f13ea4792a8211a69f32d2b460b6d520e57cd23c6301e707c76a6e97a55",
+      "url": "https://raw.githubusercontent.com/greyovo/picquery-models/4efa0ea182641611aeff68d3a06ff4e8ddf6503a/models/ml-mobileclip/third_party/open_clip/LICENSE"
+    }
+  ],
+  "model_repositories": [
+    {
+      "repo": "apple/MobileCLIP2-S0",
+      "revision": "3136ea51c8ed56b9f9abfab04cb816735aaad6cb",
+      "metadata_url": "https://huggingface.co/api/models/apple/MobileCLIP2-S0/revision/3136ea51c8ed56b9f9abfab04cb816735aaad6cb?blobs=true",
+      "weights_not_downloaded": true,
+      "published_files": [
+        {
+          "rfilename": "mobileclip2_s0.pt",
+          "blobId": "8f8262c5cbb94590ebf6aa2237239356a65c0ddf",
+          "size": 299864852,
+          "lfs": {
+            "sha256": "bc3bc861baa680df2f9e3dc1aa0acbe5a21af21032df385026dda70c33505aa6",
+            "size": 299864852,
+            "pointerSize": 134
+          }
+        }
+      ]
+    },
+    {
+      "repo": "timm/MobileCLIP2-S0-OpenCLIP",
+      "revision": "095906d28bf54d7584dc411e8ffe448f34289e05",
+      "metadata_url": "https://huggingface.co/api/models/timm/MobileCLIP2-S0-OpenCLIP/revision/095906d28bf54d7584dc411e8ffe448f34289e05?blobs=true",
+      "weights_not_downloaded": true,
+      "published_files": [
+        {
+          "rfilename": "open_clip_model.safetensors",
+          "blobId": "f20c25ddf1ea719a0326450e1c4ad69e3ae36b30",
+          "size": 299663092,
+          "lfs": {
+            "sha256": "ab91a1a0c4330d6b1913e24d5035dfdea15423316aaec649610c6b1c6ddd0e95",
+            "size": 299663092,
+            "pointerSize": 134
+          }
+        },
+        {
+          "rfilename": "open_clip_pytorch_model.bin",
+          "blobId": "f676ed432cdd7d4196a3b7cab8137650ba3a06e9",
+          "size": 299936051,
+          "lfs": {
+            "sha256": "065ff9f35b03c49e1b4150f49f6c64450c030c1276517b9a4cafc9ece35f9ccc",
+            "size": 299936051,
+            "pointerSize": 134
+          }
+        }
+      ]
+    }
+  ],
+  "model_runtime_artifacts": [
+    {
+      "filename": "mobileclip2_s0_visual.onnx",
+      "sha256": null,
+      "status": "not_generated_or_downloaded_in_A03",
+      "input": {
+        "name": "image",
+        "dtype": "float32",
+        "shape": [
+          "batch",
+          3,
+          256,
+          256
+        ]
+      },
+      "output": {
+        "name": "image_features",
+        "dtype": "float32",
+        "shape": [
+          "batch",
+          512
+        ]
+      }
+    },
+    {
+      "filename": "mobileclip2_s0_text.onnx",
+      "sha256": null,
+      "status": "not_generated_or_downloaded_in_A03",
+      "input": {
+        "name": "text",
+        "dtype": "int64",
+        "shape": [
+          "batch",
+          77
+        ]
+      },
+      "output": {
+        "name": "text_features",
+        "dtype": "float32",
+        "shape": [
+          "batch",
+          512
+        ]
+      }
+    }
+  ],
+  "source_derived_tokenizer_check": {
+    "runtime_test": false,
+    "reference_merge_count": 48894,
+    "picquery_merge_count": 262144,
+    "vocabulary_matches_after_special_token_name_mapping": true,
+    "ascii_examples": {
+      "cat": {
+        "reference_merges": {
+          "pieces": [
+            "cat</w>"
+          ],
+          "ids": [
+            2368
+          ],
+          "missing": []
+        },
+        "picquery_merges": {
+          "pieces": [
+            "cat</w>"
+          ],
+          "ids": [
+            2368
+          ],
+          "missing": []
+        }
+      },
+      "fjord": {
+        "reference_merges": {
+          "pieces": [
+            "fjor",
+            "d</w>"
+          ],
+          "ids": [
+            31260,
+            323
+          ],
+          "missing": []
+        },
+        "picquery_merges": {
+          "pieces": [
+            "fjord</w>"
+          ],
+          "ids": [],
+          "missing": [
+            "fjord</w>"
+          ]
+        }
+      },
+      "gorillas": {
+        "reference_merges": {
+          "pieces": [
+            "gor",
+            "illas</w>"
+          ],
+          "ids": [
+            1747,
+            23404
+          ],
+          "missing": []
+        },
+        "picquery_merges": {
+          "pieces": [
+            "gorillas</w>"
+          ],
+          "ids": [],
+          "missing": [
+            "gorillas</w>"
+          ]
+        }
+      }
+    }
+  },
+  "validation_limits": [
+    "No model weights downloaded",
+    "No ONNX export or inference",
+    "No Android execution",
+    "ONNX artifact hashes and runtime model identity deferred to A05/A06",
+    "EXIF and decoder equivalence requires A05 validation"
+  ]
+}

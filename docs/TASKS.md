@@ -1,6 +1,6 @@
 # Atomik çalışma listesi
 
-Her görev tek amaç taşır. Görevden önce önceki adımın sonucu ve sıradaki kapsam kullanıcıya anlatılır; kullanıcı onayından sonra başlanır. Mimari kararlar alternatifleriyle sunulur ve karar verilmeden uygulanmaz. Görev sonunda tek cümlelik İngilizce commit mesajı önerilir; commit işlemini kullanıcı yapar. Başlamadan önce kapsam ve kabul ölçütü belirtilir; görev doğrulanıp sonuç bildirildikten sonra sıradakine geçilir. Alt görevler toplu bir özellik değişikliğine dönüştürülmez. Bu liste bütün maddelerin aynı oturumda uygulanması için talimat değildir.
+Her görev tek amaç taşır. Görevden önce önceki adımın sonucu ve sıradaki kapsam kullanıcıya anlatılır; kullanıcı onayından sonra başlanır. Mimari kararlar üç alternatif, artı/eksi yönleri ve öneriyle kullanıcıya sunulur; kullanıcı seçim yapmadan uygulanmaz. Görev sonunda tek cümlelik İngilizce commit mesajı önerilir; commit işlemini kullanıcı yapar. Başlamadan önce kapsam ve kabul ölçütü belirtilir; görev doğrulanıp sonuç bildirildikten sonra sıradakine geçilir. Alt görevler toplu bir özellik değişikliğine dönüştürülmez. Bu liste bütün maddelerin aynı oturumda uygulanması için talimat değildir.
 
 ## İlk başlangıç paketinin durumu
 
@@ -13,7 +13,7 @@ Her görev tek amaç taşır. Görevden önce önceki adımın sonucu ve sırada
 | A01 (tamamlandı) | Başlangıç iskeletini doğrula | 5 çekirdek testi geçti; debug APK üretildi; lint: 0 hata, 9 uyarı |
 | A01.1 (tamamlandı) | Galeri arayüzünü sorumluluklarına göre dosyalara ayır | Debug APK ve 5 test başarılı; lint 0 hata, 9 uyarı; emülatörde açılış, izin düğmesi, liste, önizleme ve kapatma doğrulandı |
 | A02 (tamamlandı) | Galeri izin akışını cihazda doğrula | API 35 üzerinde ret/tam/sınırlı erişim, seçim değişikliği ve ayarlardan dönüş doğrulandı; tam erişimde ayarlara yönlendirme düzeltildi; [kontrol kaydı](validation/A02_GALLERY_PERMISSIONS.md) |
-| A03 | PicQuery model sözleşmesini sabitle | Referans commit, model/tokenizer/ön işleme girdileri belgeli |
+| A03 (tamamlandı) | PicQuery model sözleşmesini sabitle | Sabit uygulama/dışa aktarıcı/model sürümleri, I/O, tokenizer ve ön işleme belgeli; kullanıcı OpenCLIP referansını seçti; [sözleşme](MODEL_CONTRACT.md), [kaynak özetleri](MODEL_REFERENCES.json) |
 | A04 | Türkçe çeviri adayını seç | Kaynak, lisans, boyut ve Android uygulanabilirliği doğrulanmış |
 | A05 | Tek görselin ONNX vektörünü üret | Sabit görsel için referans çıktıyla sayısal karşılaştırma geçiyor |
 | A06 | Tek sorgunun metin vektörünü üret | Eşleşen tokenizer ve model, sabit metin için karşılaştırma geçiyor |
@@ -37,3 +37,11 @@ Gerçek model entegrasyonu sırasında çıkan belirsizlikler yeni küçük gör
 - Lint uyarıları: bağımlılık sürümü önerileri (6), Android 12 veri aktarımı/backup kuralları (1), uygulama ikonu (1), KTX stil önerisi (1). Mevcut sürüm cihazda doğrulanmadı ve dağıtıma hazır sayılmıyor.
 - APK: `app/build/outputs/apk/debug/app-debug.apk`.
 - Model inference, kalıcı vektör adaptörü, indeksleme Worker ve gerçek anlamsal arama henüz uygulanmadı.
+
+## A03 doğrulama kaydı — 23 Kasım 2026
+
+- Kullanıcı üç seçenek arasından OpenCLIP referans akışını seçti. PicQuery uygulamasındaki küçük görsel ölçekleme ve tokenizer farkları sözleşmede açıklandı.
+- Referans commit'ler ve model deposu revision'ları sabitlendi; kaynak SHA-256 değerleri yerelde hesaplandı. Ağırlık dosyası özeti sunucu metadata'sından alındı; ağırlık indirilmedi.
+- Model yapılandırmaları, dışa aktarma I/O tanımları, BPE kaynakları ve doküman bağlantıları kontrol edildi. Kaynak algoritmasından türetilen token örnekleri runtime testi değildir.
+- ONNX dosyası üretimi/özeti, Android çıkarımı, sayısal model karşılaştırması ve EXIF/decoder doğrulaması A05/A06 görevlerinde kalır. Derleme veya uygulama testi çalıştırılmadı; bu görev belge değişikliğidir.
+- Commit oluşturulmadı. Sıradaki görev A04; ayrı kapsam açıklaması ve kullanıcı onayıyla başlanır.
