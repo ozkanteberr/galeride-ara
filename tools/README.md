@@ -63,3 +63,32 @@ tmp/model-venv/Scripts/python.exe tools/a06_quantization_diagnostic.py --contrac
 ```
 
 Bu araç teşhis için eski dosyayı sabit özetle indirir, ilk tamsayı katmanını NumPy Int32 çarpımla karşılaştırır ve `quantization_diagnostic.json` yazar. Çalışma modelini seçmez veya etkin manifesti değiştirmez. [Model kartı ve lisans bildirimi](licenses/A06_MODEL_NOTICE.txt) ile [Apache-2.0 metni](licenses/APACHE-2.0.txt) korunur.
+
+## A07 — QueryEncoder adaptörü
+
+`ClipQueryEncoder.open(ClipTextFiles(model, dense, vocabulary))` her çağrıda ayrı doğrulanmış oturum açar. Aynı adaptörde sorgular oturumu yeniden kullanır. Kimlik ve dosya özetleri `MultilingualClipProfile` üzerinden sabittir; ortak manifestle test edilir. `open` IO, `encodeTurkish` Default dispatcher'da çalışır. Mevcut uygulamanın Application veya ekranında otomatik model yüklemesi yoktur.
+
+Sahip, kullandıktan sonra adaptörü kapatmalıdır. `close()` bloklayıcıdır; devam eden çağrıyı bekler. Coroutine sahibi için örnek kullanım:
+
+```kotlin
+val encoder = ClipQueryEncoder.open(ClipTextFiles(modelFile, denseFile, vocabFile))
+try {
+    val embedding = encoder.encodeTurkish("kırmızı bir araba")
+    // Embedding ortak manifest kimliğini taşır ve L2 ile normalize edilmiştir.
+} finally {
+    withContext(NonCancellable) {
+        withContext(Dispatchers.IO) { encoder.close() }
+    }
+}
+```
+
+Boş/temizlenmiş boş sorgu IllegalArgumentException üretir. Kaynaklar kapandıktan sonraki sorgu IllegalStateException üretir. Dosya doğrulama ve model hataları çağırana ulaşır; iptal bir başarıya veya genel hataya çevrilmez. Bekleyen sorgu iptal edilir, başlamış native hesap tamamlanabilir; iptal edilen sonuç dönmez. Native çağrıya anında son verme garantisi yoktur. Application singleton'ı eklenmedi; bu yaşam döngüsü kullanıcının adaptör başına oturum seçimidir.
+
+Önce A06 model dosyalarını hazırlayın. Ardından, JDK 17 ve doğru cihaz seri numarasıyla:
+
+```powershell
+./gradlew.bat :core:test "-PcoreBuildDir=$env:TEMP/galeriara-core-build" :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug
+python tools/a07_android_check.py --serial emulator-5554 --model tmp/a06/source/onnx/model_quint8_avx2.onnx --dense tmp/a06/clip_multilingual_dense.f32 --app-apk app/build/outputs/apk/debug/app-debug.apk --test-apk app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --output tmp/a07/android_report.json
+```
+
+Gerekirse `--adb <adb.exe yolu>` ve A06'daki gibi `--remote-dir /storage/<kart-kimliği>/Android/data/com.galeriara/files/a06` ekleyin. Cihazda aynı SHA-256 ile hazır olan dosyalar yeniden gönderilmez. İki APK argümanı birlikte atlanabilir. Araç manifest revision'ını ve yerel modellerin özetini kontrol eder; yalnız A07 ile A06 test sınıflarını çalıştırır. 13 testin ve rapor kimliğinin doğrulanması gerekir; instrumentation çıktısı da kaydedilir. Bu araç model indirmez, galeri indeksi veya arama ekranını etkinleştirmez.

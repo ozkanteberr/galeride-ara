@@ -1,6 +1,6 @@
 # A04.2 - Çok dilli CLIP model sözleşmesi
 
-Sözleşme sürümü: `multilingual-clip-v1`. Durum: kaynaklar ve arayüz kuralları sabitlendi. Bu belge **A05/A06 için etkin sözleşmedir**; A05 görsel dalı masaüstünde ve API 35 emülatöründe doğrulandı. A06 metin zinciri de API 35 x86_64 üzerinde doğrulandı. Galeri entegrasyonu bekliyor; [A06 kontrol kaydı](validation/A06_TEXT_ENCODER.md) ile [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) kapsamı ve sınırları açıklar.
+Sözleşme sürümü: `multilingual-clip-v1`. Durum: kaynaklar ve arayüz kuralları sabitlendi. Bu belge **görsel/metin kodlayıcıları için etkin sözleşmedir**; A05 görsel dalı masaüstünde ve API 35 emülatöründe doğrulandı. A06 metin zinciri de API 35 x86_64 üzerinde doğrulandı. A07 ile doğrudan Türkçe QueryEncoder adaptörü doğrulandı; galeri entegrasyonu bekliyor; [A06 kontrol kaydı](validation/A06_TEXT_ENCODER.md) ile [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) kapsamı ve sınırları açıklar.
 
 Makine tarafından okunabilir kurallar ve kaynak özetleri [MODEL_CONTRACT.json](MODEL_CONTRACT.json), gerçek tokenizer örnekleri [TOKENIZER_REFERENCE_CASES.json](TOKENIZER_REFERENCE_CASES.json) dosyasındadır. Önceki adayın incelemesi [MobileCLIP arşivinde](MOBILECLIP_MODEL_CONTRACT.md) korunur.
 
@@ -161,7 +161,7 @@ Siyah, beyaz, kırmızı ve gri RGB örneklerinde mean/std aritmetiği ayrıca k
 
 - **A05 tamamlandı:** Kaynak ağırlık ve görsel ONNX özeti/I/O doğrulandı; tek opak RGB PNG için Python–masaüstü ONNX–Android karşılaştırması geçti. URI/EXIF/RGBA/HDR ve fiziksel cihaz doğrulaması tamamlanmış sayılmaz.
 - **A06 tamamlandı:** Saf Kotlin tokenizer ve tek U8U8 dosyası kullanıcı tarafından seçildi. 24 örneğin iki profili için token/maskeler tam eşleşti; pooling, Dense ve normalizasyon dahil 48 Android vektör karşılaştırması geçti.
-- **A07 ve sonrası:** Doğrudan Türkçe sorgu akışını QueryEncoder arayüzüne bağla; kalıcı indeksleme ve aramayı ilgili sonraki görevlerde etkinleştir.
+- **A07 tamamlandı:** Sabit manifest profiliyle QueryEncoder adaptörü, arka plan çalışması, boş/temizlenmiş boş sorgu reddi, hata/iptal ve kaynak sahipliği doğrulandı. Kalıcı indeksleme ve arama sonraki görevlerde kalır.
 
 A04.2 kaynak sözleşmesi aşamasında uygulama kodu veya model çıkarımı yoktu. A05 ile görsel ön işleme ve ONNX çalıştırıcısı ile bağımsız referans testi eklendi; ONNX Runtime Android bağımlılığı tanımlandı. A06 ile saf Kotlin tokenizer ve ham metin çalıştırıcısı eklendi. Galeri, Room ve arama bağlantısı sonraki görevlerde kalır. Ham görsel ve metin çıktıları 512 boyutludur; uygulama sınırındaki ortak L2 kuralı korunur.
 
@@ -180,4 +180,12 @@ Kullanıcı üçer alternatiften saf Kotlin WordPiece ve tek yayımlanmış U8U8
 
 Önceki `model_qint8_arm64.onnx` mevcut x86 ortamında 48 karşılaştırmanın hiçbirinde FP32 toleransını geçmedi. İlk tamsayı katmanındaki 5376 sonuçtan 900'ü tam Int32 hesapla farklıdır. Bu, ONNX Runtime'ın belgelediği x86 U8S8 doyma sorunuyla tutarlıdır; modelin ARM üzerinde hatalı olduğunu göstermez. U8U8 aynı bütçelerle yeniden sınandı; eşikler gevşetilmedi. [Teşhis kaydı](validation/A06_INT8_X86_DIAGNOSTIC.json) ve [tekrar üretim aracı](../tools/a06_quantization_diagnostic.py) korunur.
 
-Runtime bileşen revision'ı `b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d`. Bu kimlik hazır olsa da uygulamada QueryEncoder/ImageEncoder bağlantısı ve kalıcı indeks henüz yoktur. Test içindeki `a06-numerical-validation` kimliği yalnız L2 doğrulaması içindir; üretim model kimliği olarak kullanılmaz.
+Runtime bileşen revision'ı `b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d`. A07 QueryEncoder bu ortak kimliği kullanır. Galeri ImageEncoder URI adaptörü, ekran/Worker bağlantısı ve kalıcı indeks henüz yoktur. Test içindeki `a06-numerical-validation` kimliği yalnız L2 doğrulaması içindir; üretim model kimliği olarak kullanılmaz.
+
+## A07 QueryEncoder uygulaması
+
+Kullanıcının son seçimi adaptör başına tek oturumdur. `ClipQueryEncoder.open(ClipTextFiles(...))` dosyaları `Dispatchers.IO` üzerinde doğrular/açar; sorgular `Dispatchers.Default` üzerinde tokenizer -> aynı metin oturumu -> core Embedding L2 zincirinden geçer. `MultilingualClipProfile`, [runtime manifestindeki](MODEL_RUNTIME_MANIFEST.json) kimliği ve metin/Dense/sözlük özetlerini sabitler; test bunların manifestle eşleşmesini denetler. Sayısal işlem profili değişmediğinden runtime revision değişmedi.
+
+Boş veya tokenizer temizliğinden sonra içeriksiz kalan sorgu modele verilmez. Kuyruk Mutex ile iptal edilebilir; başlamış native çağrı bitene kadar çalışabilir, iptal edilmiş sonuç döndürülmez. Hatalar ve CancellationException çağırana aynen iletilir; açılış sırasında iptal olursa oluşturulmuş oturum kapatılır. `close()` idempotent ve bloklayıcıdır; sahibi ana iş parçacığı dışında çağırmalıdır, sürmekte olan hesaba eşzamanlı kaynak kapatılmaz.
+
+11 yeni adaptör testi ve 2 A06 regresyon testi geçti. Gerçek QueryEncoder API'sinde 22 sorgu, aynı ONNX referansının normalize değerleriyle `1e-6` mutlak tolerans içinde eşleşti; FP32 referansa en düşük cosine 0.993826423024, en yüksek normalize göreli L2 0.111117946; norm hatası en çok 3.44253572e-08. [A07 kontrol kaydı](validation/A07_QUERY_ENCODER.md) gerçek native karşılaştırmasını kontrollü yaşam döngüsü testlerinden ayırır. Application genelinde singleton, model dağıtımı, galeri/Room/Worker veya ekran bağlantısı bu adımda eklenmedi.

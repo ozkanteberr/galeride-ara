@@ -21,7 +21,7 @@ Tarih: 26 Ekim 2026. Kapsam: tek geliştirici, Android, Kotlin.
 
 ## Model kararı ve doğrulama kapısı
 
-Kullanıcı A04'te **standart çok dilli CLIP** seçeneğini seçti: `sentence-transformers/clip-ViT-B-32-multilingual-v1` metin kodlayıcısı ve onunla hizalı `sentence-transformers/clip-ViT-B-32` görsel kodlayıcısı. Çeviri katmanı eklenmeyecek. Çalıştırma hedefi ONNX Runtime Android; model dosyaları ve çalışan adaptör henüz uygulamaya bağlanmadı. Türkçe sorgu ayrıntıları `QueryEncoder` adaptöründe tutulacak.
+Kullanıcı A04'te **standart çok dilli CLIP** seçeneğini seçti: `sentence-transformers/clip-ViT-B-32-multilingual-v1` metin kodlayıcısı ve onunla hizalı `sentence-transformers/clip-ViT-B-32` görsel kodlayıcısı. Çeviri katmanı eklenmeyecek. Çalıştırma hedefi ONNX Runtime Android; model dosyaları ve çalışan adaptör henüz uygulamaya bağlanmadı. Türkçe sorgu ayrıntıları A07 ile uygulanan `ClipQueryEncoder` adaptöründe tutulur; ekran/Worker henüz bu adaptörü çağırmaz.
 
 Görsel ve metin kodlayıcıları aynı uyumlu uzayda olmalıdır. Çok dilli metin kodlayıcısı önceki MobileCLIP2-S0 görsel kodlayıcısıyla eşleştirilmeyecek. A03'teki inceleme [önceki aday arşivinde](MOBILECLIP_MODEL_CONTRACT.md) korunur; seçilen çiftin A04.2 [etkin sözleşmesi](MODEL_CONTRACT.md) ve [kaynak/kurallar manifesti](MODEL_CONTRACT.json) hazırdır. Sabit kaynaklar ve karar [A04 karşılaştırmasında](A04_TURKISH_QUERY_OPTIONS.md), deney protokolü [değerlendirme planında](EVALUATION_PLAN.md) bulunur.
 
@@ -57,6 +57,8 @@ flowchart TD
     GR --> DB[(Room: photos ve embeddings)]
     UI -. sonraki görev .-> SEARCH[SearchPhotos / core]
     SEARCH --> QE[QueryEncoder arayüzü]
+    QE --> CQ[ClipQueryEncoder]
+    CQ --> TM[Doğrulanan tokenizer ve metin oturumu]
     SEARCH --> VR[VectorRepository arayüzü]
     VR -. Room adaptörü eklenecek .-> DB
     WORK[İndeksleme Worker - planlanan] -.-> IE[ImageEncoder arayüzü]
@@ -118,7 +120,7 @@ Literatürdeki alternatifler, veri seti adayları ve deney planı geliştirme bo
 
 `data/encoding/ClipImagePreprocessor`, yönü önceden düzeltilmiş Bitmap'i RGB/BICUBIC/merkez kırpma/CLIP normalizasyonu ile Float32 NCHW girdiye dönüştürür. `ClipVisualModel`, doğrulanan SHA-256 ve I/O ile dosyadan ONNX oturumu açar; CPU üzerinde ham 512 boyutlu vektör döndürür, tensör/sonuç/oturum kaynaklarını kapatır. Çağıran taraf arka plan dispatcher'ını seçmelidir. Ortak L2 normalizasyonu `core/Embedding` sınırında kalır.
 
-Bu yardımcılar galeri `ImageEncoder` URI adaptörüne, ViewModel'e, Room'a veya Worker'a bağlanmadı. APK model içermez. Bütün model çiftinin runtime manifesti metin varlıkları doğrulanınca tamamlanabilir. [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) tek kontrollü PNG ve API 35 x86_64 CPU doğrulamasını gösterir; fiziksel ARM cihazı, EXIF/decoder ve galeri başarımı çıkarımı yapılmaz.
+Bu yardımcılar galeri `ImageEncoder` URI adaptörüne, ViewModel'e, Room'a veya Worker'a bağlanmadı. APK model içermez. Bütün model çiftinin runtime manifesti A06 ile tamamlandı; A07 QueryEncoder aynı kimliği kullanır. [A05 kontrol kaydı](validation/A05_VISUAL_ENCODER.md) tek kontrollü PNG ve API 35 x86_64 CPU doğrulamasını gösterir; fiziksel ARM cihazı, EXIF/decoder ve galeri başarımı çıkarımı yapılmaz.
 
 ## A06 metin prototipi ve seçilen varyant
 
@@ -126,4 +128,12 @@ Kullanıcı saf Kotlin WordPiece ve tek U8U8 INT8 dosyasını seçti. `CasedWord
 
 Etkin dosya `model_quint8_avx2.onnx` U8U8'dir. Önceki ARM64 adlı U8S8 dosyası mevcut x86 CPU'da kabul bütçesini geçmedi; teşhis ARM cihazı ölçümü değildir. U8U8 dosyası masaüstü ve API 35 x86_64 Android üzerinde doğrulandı. Fiziksel ARM uyumu/performansı ve Türkçe retrieval başarımı ayrıca ölçülmelidir; cihaz türüne göre ikinci bir model seçme yolu eklenmedi.
 
-[Runtime manifesti](MODEL_RUNTIME_MANIFEST.json) gerçek görsel/metin/Dense/tokenizer özetleri ve işlem profillerinden ortak revision üretir. Manifestin hazır olması kodlayıcıların uygulamaya bağlandığı anlamına gelmez. Prototip henüz `QueryEncoder` uygulaması değildir; ViewModel, Room ve Worker çağırmaz. Model dağıtımı ve URI/decoder doğrulaması sonraki ilgili görevlerde kalır. [A06 kaydı](validation/A06_TEXT_ENCODER.md) ve [çalıştırma araçları](../tools/README.md) ölçüm sınırlarını açıklar.
+[Runtime manifesti](MODEL_RUNTIME_MANIFEST.json) gerçek görsel/metin/Dense/tokenizer özetleri ve işlem profillerinden ortak revision üretir. Manifestin hazır olması kodlayıcıların uygulamaya bağlandığı anlamına gelmez. A06 prototipi A07 ile `ClipQueryEncoder` arayüz uygulamasına bağlandı; ViewModel, Room ve Worker henüz çağırmaz. Model dağıtımı ve URI/decoder doğrulaması sonraki ilgili görevlerde kalır. [A06 kaydı](validation/A06_TEXT_ENCODER.md) ve [çalıştırma araçları](../tools/README.md) ölçüm sınırlarını açıklar.
+
+## A07 sorgu adaptörü ve kaynak sahipliği
+
+Kullanıcının son seçimi adaptör başına tek ONNX oturumudur. `ClipQueryEncoder.open(ClipTextFiles)` yalnız doğrulanan dosyalardan bir örnek oluşturur; Application singleton'ı veya otomatik model indirmesi eklemez. Örneği oluşturan çağıran sahibi olur; iş bittiğinde `close()` çağırır. Aynı örnekteki sorgular iptal edilebilir Mutex kuyruğuyla sıralanır. Native çalışma ve kapatma ortak yaşam döngüsü kilidiyle ayrılır; kapatma idempotenttir ve mevcut çalışmayı bekler. Kapatma bloklayıcı olduğundan ana iş parçacığı dışında yapılmalıdır.
+
+Dosya yükleme/özet doğrulama IO, tokenizer/model/L2 işlemleri Default dispatcher'dadır. Manifest kimliği `MultilingualClipProfile` içinde sabittir; bileşen değişikliği ortak manifest ve profil güncellemesi gerektirir. Normalizasyon `core/Embedding` ile yapılır. Girdi Türkçe casing'ini korur; çeviri ve ek normalizasyon katmanı yoktur. Hata ve CancellationException yutulmaz; açılış sırasında iptal edilirse oluşturulan native kaynak kapatılır.
+
+İptal kooperatiftir: kuyruk çağrısı iptal edilebilir; tokenizasyon öncesi/sonrası ve native çıktı sonrası iptal denetlenir. Devam eden native çağrı zorla kesilmez; iptal edilmiş sonuç teslim edilmez ve kaynak çağrı sürerken kapatılmaz. [A07 kaydı](validation/A07_QUERY_ENCODER.md), gerçek QueryEncoder çıktısı ile kontrollü eşzamanlılık/hata testlerini açıklar. Bu adım SearchPhotos/Room/Worker veya arama ekranı kurulumu değildir; A08 kalıcı vektör adaptörüne geçer.

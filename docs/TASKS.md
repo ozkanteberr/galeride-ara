@@ -20,7 +20,7 @@ Her görev tek amaç taşır. Markdown dosyalarına yeni tarih eklenmez. Görevd
 | A04.2 (tamamlandı) | Seçilen çok dilli CLIP model sözleşmesini uyarla | [Etkin sözleşme](MODEL_CONTRACT.md), [kaynak/kurallar](MODEL_CONTRACT.json) ve [14 tokenizer referansı](TOKENIZER_REFERENCE_CASES.json) hazır; görsel processor, pooling/Dense, hedef I/O ve toleranslar sabit; model çıkarımı henüz yapılmadı |
 | A05 (tamamlandı) | Tek görselin ONNX vektörünü üret | Görsel + projeksiyon FP32 ONNX üretildi; SHA-256/I/O ve Python–masaüstü–API 35 Android karşılaştırması geçti; [kontrol kaydı](validation/A05_VISUAL_ENCODER.md) |
 | A06 (tamamlandı) | Tek sorgunun metin vektörünü üret | Saf Kotlin tokenizer + seçilen U8U8 model + pooling/Dense; 24 örnek × 2 profil, Python–Android karşılaştırması ve L2 kontrolü geçti; [kayıt](validation/A06_TEXT_ENCODER.md) |
-| A07 | Doğrudan Türkçe sorgu akışını QueryEncoder adaptörüne bağla | Sabit manifest kimliği, tokenizer ve metin modeliyle çevirisiz kodlama; boş sorgu, iptal ve hata davranışı doğrulanmış |
+| A07 (tamamlandı) | Doğrudan Türkçe sorgu akışını QueryEncoder adaptörüne bağla | Adaptör başına oturum, sabit kimlik ve L2; 22 gerçek sorgu, boş sorgu/hata/iptal/kapatma kontrolleri; 11 yeni + 2 regresyon Android testi geçti; [kayıt](validation/A07_QUERY_ENCODER.md) |
 | A08 | Vektörün Room'a yazılıp okunmasını ekle | Float32 round-trip ve model sürümü ayrımı testli |
 | A09 | Tek fotoğrafı kalıcı indeksle | Vektör ve metadata tutarlı kaydediliyor |
 | A10 | Artımlı iş listesini ekle | Değişmeyen fotoğraf atlanıyor, değişen tekrar işleniyor |
@@ -99,3 +99,11 @@ Gerçek model entegrasyonu sırasında çıkan belirsizlikler yeni küçük gör
 - Seçilen metin gövdesi, maskeli ortalama ve 768 -> 512 Dense zinciri çalıştı. 48 Android/masaüstü vektörü birebir aynı; FP32 referansa en düşük cosine 0.993826400315, en yüksek göreli L2 0.11148372; sabit 0.99/0.15 bütçeleri geçti. Normalize norm hatası en çok 3.44253572e-08.
 - Debug ve test APK üretildi; 5 çekirdek testi ile 2 A06 Android testi geçti; lint 0 hata, 12 uyarı. Yeni native bağımlılık eklenmedi. Kod, [runtime manifesti](MODEL_RUNTIME_MANIFEST.json), kaynak özetleri, bağımsız fixture'lar ve [doğrulama kaydı](validation/A06_TEXT_ENCODER.md) hazır.
 - Model ve Dense ağırlıkları Git'e/APK'ya eklenmedi. Fiziksel ARM, retrieval başarımı, URI/EXIF/decoder ve galeri/Room/Worker bağlantısı tamamlanmış sayılmaz. Sıradaki atomik görev A07: seçilen doğrudan Türkçe sorgu akışını QueryEncoder adaptörüne bağlamak; arama ekranını etkinleştirme A13'te kalır. Commit veya push yapılmadı.
+
+## A07 QueryEncoder sonucu
+
+- Kullanıcının son tercihi adaptör başına tek oturum ve açık kaynak sahipliğidir. Application genelinde paylaşılan oturum eklenmedi; GalleryApplication ve ekran davranışı değiştirilmedi.
+- `ClipQueryEncoder`, A06 tokenizer/metin modelini QueryEncoder arayüzüne bağlar. `MultilingualClipProfile` ortak model kimliğini ve dosya özetlerini sabitler. Açılış IO, kodlama Default dispatcher üzerindedir; vektör core Embedding sınırında bir kez normalize edilir.
+- Gerçek adaptörde 22 sorgu bağımsız referansla geçti. Boş/temizlenmiş boş girdiler inference'a ulaşmaz; iptal edilen kuyruk çağrısı çalışmaz, başlamış native çağrının iptal edilmiş sonucu teslim edilmez. Açılış iptalinde kaynak sızıntısı, hata sonrası kullanım ve güvenli/idempotent kapatma kontrollü oturumlarla sınandı.
+- Debug/test APK üretildi; 5 çekirdek testi ve 13 Android testi (11 A07 + 2 A06 regresyon) başarılı. Lint 0 hata, 12 uyarı. Native çağrıya anında son verme, fiziksel ARM ve retrieval başarımı bu sonucun parçası değildir.
+- [Doğrulama kaydı](validation/A07_QUERY_ENCODER.md) ve tekrar üretim aracı hazır; yeni model ağırlığı veya .f32 fixture eklenmedi. Sıradaki atomik görev A08: vektörü Room'a yazıp okumak; arama ekranının etkinleştirilmesi A13'te kalır. Commit veya push yapılmadı.

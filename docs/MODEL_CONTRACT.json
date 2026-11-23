@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "contract_version": "multilingual-clip-v1",
-  "status": "visual_and_text_numerically_verified_gallery_integration_pending",
+  "status": "query_encoder_verified_persistent_index_pending",
   "selection": {
     "option": 1,
     "translation": null,
@@ -1145,7 +1145,8 @@
     "runtime_manifest_complete": true,
     "manifest_file": "MODEL_RUNTIME_MANIFEST.json",
     "application_integration_complete": false,
-    "revision_recipe": "SHA-256 of manifest without revision field; UTF-8, sorted keys, compact separators, ensure_ascii=false"
+    "revision_recipe": "SHA-256 of manifest without revision field; UTF-8, sorted keys, compact separators, ensure_ascii=false",
+    "query_encoder_implemented": true
   },
   "tolerances": {
     "tokenizer": "exact ids and masks",
@@ -1197,11 +1198,29 @@
     "kotlin_tokenizer_exact": true,
     "text_record": "validation/A06_TEXT_ENCODER.json",
     "physical_arm_verified": false,
-    "retrieval_quality_measured": false
+    "retrieval_quality_measured": false,
+    "query_encoder_executed": true,
+    "query_encoder_queries": 22,
+    "query_encoder_lifecycle_tests": 11,
+    "a06_regression_passed": true
   },
   "historical_contract": {
     "archive": "MOBILECLIP_MODEL_CONTRACT.md",
     "previous_active_file_sha256": "08359fe33d027546ac1c8aa2d57a871588cc16090a841740270bed4fb761d785",
     "previous_model_source_manifest": "MODEL_REFERENCES.json"
+  },
+  "query_encoder": {
+    "implementation": "ClipQueryEncoder",
+    "profile": "MultilingualClipProfile",
+    "runtime_revision": "b01d72b7de9160a38730f6a8102bbbcbc799bb5a153caf9df6e21eec302a310d",
+    "session_lifetime": "one explicitly owned session per adapter; user final option 1",
+    "loading_dispatcher": "Dispatchers.IO",
+    "encoding_dispatcher": "Dispatchers.Default",
+    "normalization": "core Embedding L2 once",
+    "translation": null,
+    "waiting_queries": "cancellable Mutex",
+    "close": "blocking and idempotent; invoke off main; waits for current call",
+    "cancellation": "cooperative checks; cancelled result discarded; active native call is not forcibly terminated",
+    "validation_record": "validation/A07_QUERY_ENCODER.json"
   }
 }
